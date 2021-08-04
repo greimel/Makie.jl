@@ -1,0 +1,92 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>surface</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=surface ><a href="#surface" class=header-anchor >surface</a></h1> <div class=docstring > <h2 class=doc-header  id=surface > <a href="#surface">surface</a> <div class=doc-type ></div> </h2> <div class=doc-content ><pre><code class="julia hljs">surface(x, y, z)</code></pre>
+<p>Plots a surface, where <code>&#40;x, y&#41;</code>  define a grid whose heights are the entries in <code>z</code>. <code>x</code> and <code>y</code> may be <code>Vectors</code> which define a regular grid, <strong>or</strong> <code>Matrices</code> which define an irregular grid.</p>
+</div>
+  </div>
+
+<h3 id=examples ><a href="#examples" class=header-anchor >Examples</a></h3>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+
+xs = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >100</span>)
+ys = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >15</span>, <span class=hljs-number >100</span>)
+zs = [cos(x) * sin(y) <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> xs, y <span class=hljs-keyword >in</span> ys]
+
+surface(xs, ys, zs, axis=(type=Axis3,))</code></pre></p>
+<p>
+  <a id=example_9712819408553627201 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/surface/code/output/example_9712819408553627201.png" alt=""> 
+  </a>
+  
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> SparseArrays
+<span class=hljs-keyword >using</span> LinearAlgebra
+<span class=hljs-keyword >using</span> GLMakie
+
+<span class=hljs-comment ># This example was provided by Moritz Schauer (@mschauer).</span>
+
+<span class=hljs-comment >#=
+Define the precision matrix (inverse covariance matrix)
+for the Gaussian noise matrix.  It approximately coincides
+with the Laplacian of the 2d grid or the graph representing
+the neighborhood relation of pixels in the picture,
+https://en.wikipedia.org/wiki/Laplacian_matrix
+=#</span>
+<span class=hljs-keyword >function</span> gridlaplacian(m, n)
+    S = sparse(<span class=hljs-number >0.0</span>I, n*m, n*m)
+    linear = <span class=hljs-built_in >LinearIndices</span>((<span class=hljs-number >1</span>:m, <span class=hljs-number >1</span>:n))
+    <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:m
+        <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:n
+            <span class=hljs-keyword >for</span> (i2, j2) <span class=hljs-keyword >in</span> ((i + <span class=hljs-number >1</span>, j), (i, j + <span class=hljs-number >1</span>))
+                <span class=hljs-keyword >if</span> i2 &lt;= m &amp;&amp; j2 &lt;= n
+                    S[linear[i, j], linear[i2, j2]] -= <span class=hljs-number >1</span>
+                    S[linear[i2, j2], linear[i, j]] -= <span class=hljs-number >1</span>
+                    S[linear[i, j], linear[i, j]] += <span class=hljs-number >1</span>
+                    S[linear[i2, j2], linear[i2, j2]] += <span class=hljs-number >1</span>
+                <span class=hljs-keyword >end</span>
+            <span class=hljs-keyword >end</span>
+        <span class=hljs-keyword >end</span>
+    <span class=hljs-keyword >end</span>
+    <span class=hljs-keyword >return</span> S
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-comment ># d is used to denote the size of the data</span>
+d = <span class=hljs-number >150</span>
+
+ <span class=hljs-comment ># Sample centered Gaussian noise with the right correlation by the method</span>
+ <span class=hljs-comment ># based on the Cholesky decomposition of the precision matrix</span>
+data = <span class=hljs-number >0.1</span>randn(d,d) + reshape(
+        cholesky(gridlaplacian(d,d) + <span class=hljs-number >0.003</span>I) \ randn(d*d),
+        d, d
+)
+
+surface(data; shading=<span class=hljs-literal >false</span>, colormap = :deep, axis = (show_axis = <span class=hljs-literal >false</span>,))</code></pre></p>
+<p>
+  <a id=example_7032801500514756494 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/surface/code/output/example_7032801500514756494.png" alt=""> 
+  </a>
+  
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

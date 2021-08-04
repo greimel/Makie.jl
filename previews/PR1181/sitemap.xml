@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/tutorials/layout-tutorial/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/label/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/lscene/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/index.html</loc>
+    <lastmod>0001-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/streamplot/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/linesegments/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/button/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/crossbar/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/wireframe/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/cameras/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/layoutables/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/franklin/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/animation/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/tutorials/index.html</loc>
+    <lastmod>0001-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/plot_method_signatures/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/barplot/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/scatter/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/index.html</loc>
+    <lastmod>0001-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/violin/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/events/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/remote/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/heatmap/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/recipes/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/gridlayout/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/band/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/colors/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/axis/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/stem/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/series/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/image/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/intervalslider/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/arrows/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/faq/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/volume/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/404/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/meshscatter/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/poly/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/rangebars/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/predefined_themes/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/wglmakie/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/tutorials/basic-tutorial/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/axis3/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/index.html</loc>
+    <lastmod>0001-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/nodes/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/inspector/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/box/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/contour/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/volumeslices/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/figure/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/lighting/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/stairs/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/colorbar/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/legend/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/surface/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/scenes/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/backends_and_output/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/text/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/boxplot/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/lines/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/errorbars/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/menu/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/layouting/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/hist/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/density/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/mesh/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/slider/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/layoutables/toggle/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/contourf/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/theming/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/documentation/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+<url>
+    <loc>http://makie.juliaplots.org/previews/PR1181/examples/plotting_functions/scatterlines/index.html</loc>
+    <lastmod>2021-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+</url>
+</urlset>

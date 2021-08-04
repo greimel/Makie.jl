@@ -1,0 +1,130 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>GridLayout</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=gridlayout ><a href="#gridlayout" class=header-anchor >GridLayout</a></h1> <h2 id=setting_column_and_row_sizes_correctly ><a href="#setting_column_and_row_sizes_correctly" class=header-anchor >Setting column and row sizes correctly</a></h2> <p>There are four different types of sizes you can give rows and columns.</p> <h3 id=fixed ><a href="#fixed" class=header-anchor >Fixed</a></h3> <p><code>Fixed&#40;scene_units&#41;</code> is used to set a column or row to an absolute size, independent of its content. This only really makes sense if there is variable width content in the column or row, that can shrink or expand to meet this size. You will probably not need <code>Fixed</code> sizes very often.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column has size Fixed(400)&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column has size Auto()&quot;</span>)
+
+colsize!(layout, <span class=hljs-number >1</span>, Fixed(<span class=hljs-number >400</span>))
+<span class=hljs-comment ># colsize!(layout, 1, 400) would also work</span>
+
+scene</code></pre></p> <p> <a id=example_2630845883682622478 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_2630845883682622478.png" alt=""> </a> <h3 id=relative ><a href="#relative" class=header-anchor >Relative</a></h3> <p><code>Relative&#40;fraction&#41;</code> is used to set a column or row to a size that is a certain fraction of the available width or height. This is useful, e.g., if you want a column to span 50&#37; of the available width, no matter what other content is there. In this case, you would use <code>Relative&#40;1/2&#41;</code>. The available width is the width of the GridLayout minus the space taken by row or column gaps including protrusions.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column has size Relative(2/3)&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column has size Auto()&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>] = Colorbar(scene)
+
+colsize!(layout, <span class=hljs-number >1</span>, Relative(<span class=hljs-number >2</span>/<span class=hljs-number >3</span>))
+
+scene</code></pre></p> <p> <a id=example_10393269468854575184 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_10393269468854575184.png" alt=""> </a> <h3 id=auto ><a href="#auto" class=header-anchor >Auto</a></h3> <p>The <code>Auto</code> size is a bit more complex to understand. It has two parameters, the Boolean <code>trydetermine</code> and the number <code>ratio</code>. The default is <code>Auto&#40;&#41; &#61;&#61; Auto&#40;true, 1&#41;</code>. This is also the default row height and column width.</p> <p>A column or row that is sized <code>Auto&#40;true&#41;</code> tries to fit its own size to its content.</p> <p>When a <code>GridLayout</code> is solved, it looks at the content in each row or column and checks if it reports a fixed size. Many objects can report their own width or height because their content has a specific size, such as <code>Label</code>. Other objects are often used with a user-set width or height, for example <code>Colorbar&#40;scene, width &#61; 30&#41;</code>. In this case, the <code>GridLayout</code> can also see that the colorbar has a width of 30 units and fit the column width to that value. Objects like <code>Axis</code> on the other hand are usually not set to a specific size.</p> <p>Only objects that span a <em>single</em> row or column report their width or height, respectively. If <em>multiple</em> rows or columns are spanned, it&#39;s not well defined how the space that the object needs should be distributed.</p> <p>If there is more than one object with a fixed width or height in an <code>Auto&#40;true&#41;</code> sized column, the maximum size is used.</p> <p>If a column or row is sized <code>Auto&#40;false&#41;</code>, fixed-size objects are ignored. It can also happen of course, that there is no fixed-size object in a row or column with <code>Auto&#40;true&#41;</code> size. In both these cases, columns or rows determine their size by what remains after all <code>Fixed</code>, <code>Relative</code>, <code>Aspect</code> and size-inferred <code>Auto&#40;true&#41;</code> columns or rows have been calculated. Each undetermined <code>Auto</code> column gets a share of the remaining space that is proportional to its <code>ratio</code> parameter.</p> <p>For example, let&#39;s say there are two columns left with undetermined <code>Auto</code> size when 300 units space remain. Column 1 has ratio <code>1</code> while column 2 has ratio <code>2</code>. The first column will get <code>1 / &#40;1 &#43; 2&#41; * 300 &#61;&#61; 100</code> units, while the second column gets <code>2 / &#40;1 &#43; 2&#41; * 300 &#61;&#61; 200</code> units.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column infers my width\nof 200 units&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column gets 1/3rd\nof the remaining space&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>] = Axis(scene, title = <span class=hljs-string >&quot;My column gets 2/3rds\nof the remaining space&quot;</span>)
+
+colsize!(layout, <span class=hljs-number >2</span>, Auto(<span class=hljs-number >1</span>)) <span class=hljs-comment ># equivalent to Auto(true, 1)</span>
+colsize!(layout, <span class=hljs-number >3</span>, Auto(<span class=hljs-number >2</span>)) <span class=hljs-comment ># equivalent to Auto(true, 2)</span>
+
+scene</code></pre></p> <p> <a id=example_85609092639623926 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_85609092639623926.png" alt=""> </a> <h3 id=aspect ><a href="#aspect" class=header-anchor >Aspect</a></h3> <p>This size is also a little bit trickier to understand. The syntax is <code>Aspect&#40;reference, ratio&#41;</code>. A column with a width of <code>Aspect&#40;1, 2.0&#41;</code> is set to 2.0 times the height of row 1, no matter what that height is. Therefore, the grid cell at &#91;1, 1&#93; will always have an aspect ratio of 2 to 1. The opposite pattern applies to rows with <code>Aspect</code> size.</p> <p>Aspect sized columns or rows are very useful when you want to constrain the aspect ratio of a grid cell. For example, a plot that is always supposed to be square. Enforcing the aspect <em>on the layout level is better</em> than setting <code>axis.aspect &#61; AxisAspect&#40;1&#41;</code> in most cases, because it ensures an <em>intact layout</em> where all grid cell borders are aligned visually. An <code>Axis</code> with <code>aspect &#61; AxisAspect&#40;1&#41;</code> on the other hand simply shrinks so it remains square, but this will break alignment with other grid content.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;I&#x27;m square and aligned&quot;</span>)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Box(scene, color = (:blue, <span class=hljs-number >0.1</span>), strokecolor = :transparent)
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, aspect = AxisAspect(<span class=hljs-number >1</span>),
+    title = <span class=hljs-string >&quot;I&#x27;m square but break the layout.\nMy actual cell is the blue rect.&quot;</span>)
+layout[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>] = Axis(scene)
+layout[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>] = Axis(scene)
+
+rowsize!(layout, <span class=hljs-number >2</span>, Relative(<span class=hljs-number >2</span>/<span class=hljs-number >3</span>))
+colsize!(layout, <span class=hljs-number >1</span>, Aspect(<span class=hljs-number >1</span>, <span class=hljs-number >1</span>))
+
+scene</code></pre></p> <p> <a id=example_9520297195053585951 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_9520297195053585951.png" alt=""> </a> <div class="admonition note"><p class=admonition-title >Note</p><p>Keep in mind that if you set too many constraints on row and column sizes, a GridLayout can easily be too big or too small. It&#39;s good to have variable-width elements to fill the remaining space if you use an element with fixed size or fixed aspect ratio.</p> </div> <h2 id=nesting ><a href="#nesting" class=header-anchor >Nesting</a></h2> <p>Grids can be nested inside other grids, and so on, to arbitrary depths. The top grid&#39;s parent should be the scene in which the layout is placed. When you place a grid inside another grid, that grid is automatically made its parent. Grids also are by default set to alignmode Inside which means that the content edges are aligned to the grid&#39;s bounding box, excluding the outer protrusions. This way, plots in nested grids are nicely aligned along their spines.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(<span class=hljs-number >30</span>, resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+subgl_left = GridLayout()
+subgl_left[<span class=hljs-number >1</span>:<span class=hljs-number >2</span>, <span class=hljs-number >1</span>:<span class=hljs-number >2</span>] = [Axis(scene) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>, j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>]
+
+subgl_right = GridLayout()
+subgl_right[<span class=hljs-number >1</span>:<span class=hljs-number >3</span>, <span class=hljs-number >1</span>] = [Axis(scene) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = subgl_left
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = subgl_right
+
+scene</code></pre></p> <p> <a id=example_1600585324001295073 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_1600585324001295073.png" alt=""> </a> <h2 id=alignment ><a href="#alignment" class=header-anchor >Alignment</a></h2> <p>Here you can see the difference between the align modes Outside with and without margins and the Inside alignmode. Only the standard Inside mode aligns the axis spines of the contained axes nicely. The Outside mode is mostly useful for the main GridLayout so that there some space between the window edges and the plots. You can see that the normal axis looks the same as the one placed inside the grid with Inside alignment, and they are both effectively aligned exactly the same.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >1200</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;No grid layout&quot;</span>)
+layout[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;No grid layout&quot;</span>)
+layout[<span class=hljs-number >3</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;No grid layout&quot;</span>)
+
+subgl_1 = layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = GridLayout(alignmode=Inside())
+subgl_2 = layout[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>] = GridLayout(alignmode=Outside())
+subgl_3 = layout[<span class=hljs-number >3</span>, <span class=hljs-number >2</span>] = GridLayout(alignmode=Outside(<span class=hljs-number >50</span>))
+
+subgl_1[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;Inside&quot;</span>)
+subgl_2[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;Outside&quot;</span>)
+subgl_3[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title=<span class=hljs-string >&quot;Outside(50)&quot;</span>)
+
+layout[<span class=hljs-number >1</span>:<span class=hljs-number >3</span>, <span class=hljs-number >2</span>] = [Box(scene, color = :transparent, strokecolor = :red) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+
+scene</code></pre></p> <p> <a id=example_16427511238910256679 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_16427511238910256679.png" alt=""> </a> <h2 id=spanned_placement ><a href="#spanned_placement" class=header-anchor >Spanned Placement</a></h2> <p>Elements in a grid layout can span multiple rows and columns. You can specify them with the range syntax and colons for the full width or height. You can also use end to specify the last row or column.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(<span class=hljs-number >4</span>, <span class=hljs-number >4</span>, resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >1200</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>:<span class=hljs-number >2</span>] = Axis(scene, title=<span class=hljs-string >&quot;[1, 1:2]&quot;</span>)
+layout[<span class=hljs-number >2</span>:<span class=hljs-number >4</span>, <span class=hljs-number >1</span>:<span class=hljs-number >2</span>] = Axis(scene, title=<span class=hljs-string >&quot;[2:4, 1:2]&quot;</span>)
+layout[:, <span class=hljs-number >3</span>] = Axis(scene, title=<span class=hljs-string >&quot;[:, 3]&quot;</span>)
+layout[<span class=hljs-number >1</span>:<span class=hljs-number >3</span>, <span class=hljs-keyword >end</span>] = Axis(scene, title=<span class=hljs-string >&quot;[1:3, end]&quot;</span>)
+layout[<span class=hljs-keyword >end</span>, <span class=hljs-keyword >end</span>] = Axis(scene, title=<span class=hljs-string >&quot;[end, end]&quot;</span>)
+
+scene</code></pre></p> <p> <a id=example_87802353643523364 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_87802353643523364.png" alt=""> </a> <h2 id=adding_rows_and_columns_by_indexing ><a href="#adding_rows_and_columns_by_indexing" class=header-anchor >Adding rows and columns by indexing</a></h2> <p>If you index outside of the current range of a grid layout, you do not get an error. Instead, the layout automatically resizes to contain the new indices. This is very useful if you want to iteratively build a layout, or add super or side titles.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >1200</span>))
+
+layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene)
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>
+    layout[:, <span class=hljs-keyword >end</span>+<span class=hljs-number >1</span>] = Axis(scene)
+    layout[<span class=hljs-keyword >end</span>+<span class=hljs-number >1</span>, :] = Axis(scene)
+<span class=hljs-keyword >end</span>
+
+layout[<span class=hljs-number >0</span>, :] = Label(scene, text=<span class=hljs-string >&quot;Super Title&quot;</span>, textsize=<span class=hljs-number >50</span>)
+layout[<span class=hljs-keyword >end</span>+<span class=hljs-number >1</span>, :] = Label(scene, text=<span class=hljs-string >&quot;Sub Title&quot;</span>, textsize=<span class=hljs-number >50</span>)
+layout[<span class=hljs-number >2</span>:<span class=hljs-keyword >end</span>-<span class=hljs-number >1</span>, <span class=hljs-number >0</span>] = Label(scene, text=<span class=hljs-string >&quot;Left Text&quot;</span>, textsize=<span class=hljs-number >50</span>,
+    rotation=<span class=hljs-literal >pi</span>/<span class=hljs-number >2</span>)
+layout[<span class=hljs-number >2</span>:<span class=hljs-keyword >end</span>-<span class=hljs-number >1</span>, <span class=hljs-keyword >end</span>+<span class=hljs-number >1</span>] = Label(scene, text=<span class=hljs-string >&quot;Right Text&quot;</span>, textsize=<span class=hljs-number >50</span>,
+    rotation=-<span class=hljs-literal >pi</span>/<span class=hljs-number >2</span>)
+
+scene</code></pre></p> <p> <a id=example_15288695648101333679 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_15288695648101333679.png" alt=""> </a> <h2 id=trimming_empty_rows_and_columns ><a href="#trimming_empty_rows_and_columns" class=header-anchor >Trimming empty rows and columns</a></h2> <p>If you change a layout interactively and end up with unused rows or columns, <code>trim&#33;</code> will remove those for you.</p> <p>Here we start with two axes:</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+ax1 = layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;Axis 1&quot;</span>)
+ax2 = layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, title = <span class=hljs-string >&quot;Axis 2&quot;</span>)
+
+scene</code></pre></p> <p> <a id=example_1480690751776636558 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_1480690751776636558.png" alt=""> </a> <p>Now we decide we&#39;d like the second axis better if it was below the first one. We move it two the new cell, and the old unused column is left blank.</p> <pre><code class="julia hljs">layout[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>] = ax2
+
+scene</code></pre></p> <p> <a id=example_15233773298483586245 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_15233773298483586245.png" alt=""> </a> <p>We can get rid of the unused space with <code>trim&#33;</code>:</p> <pre><code class="julia hljs">trim!(layout)
+
+scene</code></pre></p> <p> <a id=example_8812469996514969841 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_8812469996514969841.png" alt=""> </a> <h2 id=tweaking_space_between_rows_and_columns ><a href="#tweaking_space_between_rows_and_columns" class=header-anchor >Tweaking space between rows and columns</a></h2> <p>You can use <code>rowgap&#33;</code> and <code>colgap&#33;</code> to change the spacing between rows or columns respectively.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+fig = Figure()
+
+axs = [Axis(fig[i, j]) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>, j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+axs[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>].title = <span class=hljs-string >&quot;Group A&quot;</span>
+axs[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>].title = <span class=hljs-string >&quot;Group B.1&quot;</span>
+axs[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>].title = <span class=hljs-string >&quot;Group B.2&quot;</span>
+
+hidedecorations!.(axs, grid=<span class=hljs-literal >false</span>)
+
+colgap!(fig.layout, <span class=hljs-number >1</span>, Relative(<span class=hljs-number >0.15</span>))
+
+fig</code></pre></p> <p> <a id=example_701624613800466984 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_701624613800466984.png" alt=""> </a> <p>All spaces can be changed at once by omitting the index of the gap to resize.</p> <pre><code class="julia hljs">rowgap!(fig.layout, <span class=hljs-number >50</span>)
+
+fig</code></pre></p> <p> <a id=example_8430063235735896023 > <img src="/previews/PR1181/assets/examples/layoutables/gridlayout/code/output/example_8430063235735896023.png" alt=""> </a> <div class=page-foot > <div class=copyright > &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </div> </div> <div class=page__footer > <footer> <div class=page__footer-follow > <ul class=social-icons > <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a> <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a> </ul> </div> <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div> <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p> </footer> </div> <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script> <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

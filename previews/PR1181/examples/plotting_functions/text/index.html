@@ -1,0 +1,165 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>text</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=text ><a href="#text" class=header-anchor >text</a></h1> <div class=docstring > <h2 class=doc-header  id=text > <a href="#text">text</a> <div class=doc-type ></div> </h2> <div class=doc-content ><pre><code class="julia hljs">text(string)</code></pre>
+<p>Plots a text.</p>
+</div>
+  </div>
+
+<h2 id=screen_space_text ><a href="#screen_space_text" class=header-anchor >Screen space text</a></h2>
+<p>By default, text is drawn in screen space &#40;<code>space &#61; :screen</code>&#41;. The text anchor is given in data coordinates, but the size of the glyphs is independent of data scaling. The boundingbox of the text will include every data point or every text anchor point. This also means that <code>autolimits&#33;</code> might cut off your text, because the glyphs don&#39;t have a meaningful size in data coordinates &#40;the size is independent of zoom level&#41;, and you have to take some care to manually place the text or set data limits such that it is fully visible.</p>
+<p>You can either plot one string with one position, or a vector of strings with a vector of positions.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], aspect = DataAspect(), backgroundcolor = :gray50)
+
+scatter!(Point2f0(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>))
+text!(<span class=hljs-string >&quot;center&quot;</span>, position = (<span class=hljs-number >0</span>, <span class=hljs-number >0</span>), align = (:center, :center))
+
+circlepoints = [(cos(a), sin(a)) <span class=hljs-keyword >for</span> a <span class=hljs-keyword >in</span> <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >2</span><span class=hljs-literal >pi</span>, <span class=hljs-number >16</span>)[<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>-<span class=hljs-number >1</span>]]
+scatter!(circlepoints)
+text!(
+    <span class=hljs-string >&quot;this is point &quot;</span> .* string.(<span class=hljs-number >1</span>:<span class=hljs-number >15</span>),
+    position = circlepoints,
+    rotation = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >2</span><span class=hljs-literal >pi</span>, <span class=hljs-number >16</span>)[<span class=hljs-number >1</span>:<span class=hljs-keyword >end</span>-<span class=hljs-number >1</span>],
+    align = (:right, :baseline),
+    color = cgrad(:Spectral)[<span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >1</span>, <span class=hljs-number >15</span>)]
+)
+
+f</code></pre></p>
+<p>
+  <a id=example_9180335225915783822 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/text/code/output/example_9180335225915783822.png" alt=""> 
+  </a>
+  
+<h2 id=data_space_text ><a href="#data_space_text" class=header-anchor >Data space text</a></h2>
+<p>For text whose dimensions are meaningful in data space, set <code>space &#61; :data</code>. This means that the boundingbox of the text in data coordinates will include every glyph.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+LScene(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+text!(
+    fill(<span class=hljs-string >&quot;Makie&quot;</span>, <span class=hljs-number >7</span>),
+    rotation = [i / <span class=hljs-number >7</span> * <span class=hljs-number >1.5</span><span class=hljs-literal >pi</span> <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >7</span>],
+    position = [Point3f0(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>, i/<span class=hljs-number >2</span>) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >7</span>],
+    color = [cgrad(:viridis)[x] <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >1</span>, <span class=hljs-number >7</span>)],
+    align = (:left, :baseline),
+    textsize = <span class=hljs-number >1</span>,
+    space = :data
+)
+
+f</code></pre></p>
+<p>
+  <a id=example_9572458377144007811 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/text/code/output/example_9572458377144007811.png" alt=""> 
+  </a>
+  
+<h2 id=justification ><a href="#justification" class=header-anchor >Justification</a></h2>
+<p>By default, justification of multiline text follows alignment. Text that is left aligned is also left justified. You can override this with the <code>justification</code> attribute.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene = Scene(camera = campixel!, show_axis = <span class=hljs-literal >false</span>, resolution = (<span class=hljs-number >800</span>, <span class=hljs-number >800</span>))
+
+points = [Point(x, y) .* <span class=hljs-number >200</span> <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span> <span class=hljs-keyword >for</span> y <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+scatter!(scene, points, marker = :circle, markersize = <span class=hljs-number >10</span>px)
+
+symbols = (:left, :center, :right)
+
+<span class=hljs-keyword >for</span> ((justification, halign), point) <span class=hljs-keyword >in</span> zip(Iterators.product(symbols, symbols), points)
+
+    t = text!(scene, <span class=hljs-string >&quot;a\nshort\nparagraph&quot;</span>,
+        color = (:black, <span class=hljs-number >0.5</span>),
+        position = point,
+        align = (halign, :center),
+        justification = justification)
+
+    bb = boundingbox(t)
+    wireframe!(scene, bb, color = (:red, <span class=hljs-number >0.2</span>))
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-keyword >for</span> (p, al) <span class=hljs-keyword >in</span> zip(points[<span class=hljs-number >3</span>:<span class=hljs-number >3</span>:<span class=hljs-keyword >end</span>], (:left, :center, :right))
+    text!(scene, <span class=hljs-string >&quot;align :&quot;</span> * string(al), position = p .+ (<span class=hljs-number >0</span>, <span class=hljs-number >80</span>),
+        align = (:center, :baseline))
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-keyword >for</span> (p, al) <span class=hljs-keyword >in</span> zip(points[<span class=hljs-number >7</span>:<span class=hljs-number >9</span>], (:left, :center, :right))
+    text!(scene, <span class=hljs-string >&quot;justification\n:&quot;</span> * string(al), position = p .+ (<span class=hljs-number >80</span>, <span class=hljs-number >0</span>),
+        align = (:center, :top), rotation = <span class=hljs-literal >pi</span>/<span class=hljs-number >2</span>)
+<span class=hljs-keyword >end</span>
+
+scene</code></pre></p>
+<p>
+  <a id=example_12580848530414642567 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/text/code/output/example_12580848530414642567.png" alt=""> 
+  </a>
+  
+<h2 id=offset ><a href="#offset" class=header-anchor >Offset</a></h2>
+<p>The offset attribute can be used to shift text away from its position. This is especially useful with <code>space &#61; :screen</code>, for example to place text together with barplots. You can specify the end of the barplots in data coordinates, and then offset the text a little bit to the left.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+horsepower = [<span class=hljs-number >52</span>, <span class=hljs-number >78</span>, <span class=hljs-number >80</span>, <span class=hljs-number >112</span>, <span class=hljs-number >140</span>]
+cars = [<span class=hljs-string >&quot;Kia&quot;</span>, <span class=hljs-string >&quot;Mini&quot;</span>, <span class=hljs-string >&quot;Honda&quot;</span>, <span class=hljs-string >&quot;Mercedes&quot;</span>, <span class=hljs-string >&quot;Ferrari&quot;</span>]
+
+ax = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], xlabel = <span class=hljs-string >&quot;horse power&quot;</span>)
+tightlimits!(ax, Left())
+hideydecorations!(ax)
+
+barplot!(horsepower, direction = :x)
+text!(cars, position = Point.(horsepower, <span class=hljs-number >1</span>:<span class=hljs-number >5</span>), align = (:right, :center),
+    offset = (-<span class=hljs-number >20</span>, <span class=hljs-number >0</span>), color = :white)
+
+f</code></pre></p>
+<p>
+  <a id=example_8467954534360929428 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/text/code/output/example_8467954534360929428.png" alt=""> 
+  </a>
+  
+<h2 id=mathtex ><a href="#mathtex" class=header-anchor >MathTeX</a></h2>
+<p>Makie can render LaTeXStrings via <a href="https://github.com/Kolaru/MathTeXEngine.jl/">MathTeXEngine.jl</a>. For example, you can pass L-strings as labels to the legend.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+ax = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+lines!(<span class=hljs-number >0.</span><span class=hljs-number >.10</span>, x -&gt; sin(<span class=hljs-number >3</span>x) / (cos(x) + <span class=hljs-number >2</span>),
+    label = <span class=hljs-string >L&quot;\frac{\sin(3x)}{\cos(x) + 2}&quot;</span>)
+lines!(<span class=hljs-number >0.</span><span class=hljs-number >.10</span>, x -&gt; sin(x^<span class=hljs-number >2</span>) / (cos(sqrt(x)) + <span class=hljs-number >2</span>),
+    label = <span class=hljs-string >L&quot;\frac{\sin(x^2)}{\cos(\sqrt{x}) + 2}&quot;</span>)
+
+Legend(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>], ax)
+
+f</code></pre></p>
+<p>
+  <a id=example_7163903792067819962 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/text/code/output/example_7163903792067819962.png" alt=""> 
+  </a>
+  
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

@@ -1,0 +1,147 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>density</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=density ><a href="#density" class=header-anchor >density</a></h1> <div class=docstring > <h2 class=doc-header  id=density > <a href="#density">density</a> <div class=doc-type ></div> </h2> <div class=doc-content ><pre><code class="julia hljs">density(values; npoints = <span class=hljs-number >200</span>, offset = <span class=hljs-number >0.0</span>, direction = :x)</code></pre>
+<p>Plot a kernel density estimate of <code>values</code>. <code>npoints</code> controls the resolution of the estimate, the baseline can be shifted with <code>offset</code> and the <code>direction</code> set to :x or :y. <code>bandwidth</code> and <code>boundary</code> are determined automatically by default.</p>
+<p><code>color</code> is usually set to a single color, but can also be set to <code>:x</code> or <code>:y</code> to color with a gradient. If you use <code>:y</code> when direction &#61; <code>:x</code> &#40;or vice versa&#41;, note that only 2-element colormaps can work correctly.</p>
+<h2 id=attributes ><a href="#attributes" class=header-anchor >Attributes</a></h2>
+<p>Available attributes and their defaults for <code>MakieCore.Combined&#123;Makie.density, T&#125; where T</code> are: </p>
+<pre><code class="julia hljs">bandwidth     MakieCore.Automatic()
+  boundary      MakieCore.Automatic()
+  color         RGBA{<span class=hljs-built_in >Float32</span>}(<span class=hljs-number >0.0f0</span>,<span class=hljs-number >0.0f0</span>,<span class=hljs-number >0.0f0</span>,<span class=hljs-number >0.6f0</span>)
+  colormap      :viridis
+  colorrange    MakieCore.Automatic()
+  cycle         [:color =&gt; :patchcolor]
+  direction     :x
+  inspectable   <span class=hljs-literal >true</span>
+  linestyle     <span class=hljs-string >&quot;nothing&quot;</span>
+  npoints       <span class=hljs-number >200</span>
+  offset        <span class=hljs-number >0.0</span>
+  strokearound  <span class=hljs-literal >false</span>
+  strokecolor   :black
+  strokewidth   <span class=hljs-number >0</span></code></pre>
+</div>
+  </div>
+
+<h3 id=examples ><a href="#examples" class=header-anchor >Examples</a></h3>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+density!(randn(<span class=hljs-number >200</span>))
+
+f</code></pre></p>
+<p>
+  <a id=example_16923980827411139970 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_16923980827411139970.png" alt=""> 
+  </a>
+  
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+density!(randn(<span class=hljs-number >200</span>), direction = :y, npoints = <span class=hljs-number >10</span>)
+
+f</code></pre></p>
+<p>
+  <a id=example_8774148015938518082 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_8774148015938518082.png" alt=""> 
+  </a>
+  
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+density!(randn(<span class=hljs-number >200</span>), color = (:red, <span class=hljs-number >0.3</span>),
+    strokecolor = :red, strokewidth = <span class=hljs-number >3</span>, strokearound = <span class=hljs-literal >true</span>)
+
+f</code></pre></p>
+<p>
+  <a id=example_14744013027699161821 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_14744013027699161821.png" alt=""> 
+  </a>
+  
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+
+vectors = [randn(<span class=hljs-number >1000</span>) .+ i/<span class=hljs-number >2</span> <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >0</span>:<span class=hljs-number >5</span>]
+
+<span class=hljs-keyword >for</span> (i, vector) <span class=hljs-keyword >in</span> enumerate(vectors)
+    density!(vector, offset = -i/<span class=hljs-number >4</span>, color = (:slategray, <span class=hljs-number >0.4</span>),
+        bandwidth = <span class=hljs-number >0.1</span>)
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p>
+<p>
+  <a id=example_12946920703023285068 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_12946920703023285068.png" alt=""> 
+  </a>
+  
+<h4 id=gradients ><a href="#gradients" class=header-anchor >Gradients</a></h4>
+<p>You can color density plots with gradients by choosing <code>color &#61; :x</code> or <code>:y</code>, depending on the <code>direction</code> attribute.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+months = [<span class=hljs-string >&quot;January&quot;</span>, <span class=hljs-string >&quot;February&quot;</span>, <span class=hljs-string >&quot;March&quot;</span>, <span class=hljs-string >&quot;April&quot;</span>,
+    <span class=hljs-string >&quot;May&quot;</span>, <span class=hljs-string >&quot;June&quot;</span>, <span class=hljs-string >&quot;July&quot;</span>, <span class=hljs-string >&quot;August&quot;</span>, <span class=hljs-string >&quot;September&quot;</span>,
+    <span class=hljs-string >&quot;October&quot;</span>, <span class=hljs-string >&quot;November&quot;</span>, <span class=hljs-string >&quot;December&quot;</span>]
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], title = <span class=hljs-string >&quot;Fictive temperatures&quot;</span>,
+    yticks = ((<span class=hljs-number >1</span>:<span class=hljs-number >12</span>) ./ <span class=hljs-number >4</span>,  reverse(months)))
+
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >12</span>:-<span class=hljs-number >1</span>:<span class=hljs-number >1</span>
+    d = density!(randn(<span class=hljs-number >200</span>) .- <span class=hljs-number >2</span>sin((i+<span class=hljs-number >3</span>)/<span class=hljs-number >6</span>*<span class=hljs-literal >pi</span>), offset = i / <span class=hljs-number >4</span>,
+        color = :x, colormap = :thermal, colorrange = (-<span class=hljs-number >5</span>, <span class=hljs-number >5</span>))
+    <span class=hljs-comment ># this helps with layering in GLMakie</span>
+    translate!(d, <span class=hljs-number >0</span>, <span class=hljs-number >0</span>, -<span class=hljs-number >0.1</span>i)
+<span class=hljs-keyword >end</span>
+f</code></pre></p>
+<p>
+  <a id=example_7391071659388489503 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_7391071659388489503.png" alt=""> 
+  </a>
+  
+<p>Due to technical limitations, if you color the <code>:vertical</code> dimension &#40;or :horizontal with direction &#61; :y&#41;, only a colormap made with just two colors can currently work:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+<span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >5</span>
+    d = density!(x * randn(<span class=hljs-number >200</span>) .+ <span class=hljs-number >3</span>x,
+        color = :y, colormap = [:darkblue, :gray95])
+<span class=hljs-keyword >end</span>
+f</code></pre></p>
+<p>
+  <a id=example_3516370846501123851 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/density/code/output/example_3516370846501123851.png" alt=""> 
+  </a>
+  
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

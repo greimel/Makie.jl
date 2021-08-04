@@ -1,0 +1,228 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>Plot Recipes</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=plot_recipes ><a href="#plot_recipes" class=header-anchor >Plot Recipes</a></h1> <p>Recipes allow you to extend <code>Makie</code> with your own custom types and plotting commands.</p> <p>There are two types of recipes:</p> <ul> <li><p><em>Type recipes</em> define a simple mapping from a user defined type to an existing plot type</p> <li><p><em>Full recipes</em> define new custom plotting functions.</p> </ul> <h2 id=type_recipes ><a href="#type_recipes" class=header-anchor >Type recipes</a></h2> <p>Type recipes are mostly just conversions from one type or set of input argument types, yet unknown to Makie, to another which Makie can handle already.</p> <p>This is the sequential logic by which conversions in Makie are attempted:</p> <ul> <li><p>Dispatch on <code>convert_arguments&#40;::PlotType, args...&#41;</code></p> <li><p>If no matching method is found, determine a conversion trait via <code>conversion_trait&#40;::PlotType&#41;</code></p> <li><p>Dispatch on <code>convert_arguments&#40;::ConversionTrait, args...&#41;</code></p> <li><p>If no matching method is found, try to convert each single argument recursively with <code>convert_single_argument</code> until each type doesn&#39;t change anymore</p> <li><p>Dispatch on <code>convert_arguments&#40;::PlotType, converted_args...&#41;</code></p> <li><p>Fail if no method was found</p> </ul> <h3 id=multiple_argument_conversion_with_convert_arguments ><a href="#multiple_argument_conversion_with_convert_arguments" class=header-anchor >Multiple Argument Conversion with convert_arguments</a></h3> <p>Plotting of a <code>Circle</code> for example can be defined via a conversion into a vector of points:</p> <pre><code class="julia hljs">Makie.convert_arguments(x::Circle) = (decompose(Point2f, x),)</code></pre>
+<div class="admonition warning"><p class=admonition-title >Warning</p><p><code>convert_arguments</code> must always return a Tuple.</p>
+</div>
+<p>You can restrict conversion to a subset of plot types, like only for scatter plots:</p>
+<pre><code class="julia hljs">Makie.convert_arguments(P::<span class=hljs-built_in >Type</span>{&lt;:Scatter}, x::MyType) = convert_arguments(P, rand(<span class=hljs-number >10</span>, <span class=hljs-number >10</span>))</code></pre>
+<p>Conversion traits make it easier to define behavior for a group of plot types that share the same trait. <code>PointBased</code> for example applies to <code>Scatter</code>, <code>Lines</code>, etc. Predefined are <code>NoConversion</code>, <code>PointBased</code>, <code>SurfaceLike</code> and <code>VolumeLike</code>.</p>
+<pre><code class="julia hljs">Makie.convert_arguments(P::PointBased, x::MyType) = ...</code></pre>
+<p>Lastly, it is also possible to convert multiple arguments together.</p>
+<pre><code class="julia hljs">Makie.convert_arguments(P::<span class=hljs-built_in >Type</span>{&lt;:Scatter}, x::MyType, y::MyOtherType) = ...</code></pre>
+<p>Optionally you may define the default plot type so that <code>plot&#40;x::MyType&#41;</code> will use it directly:</p>
+<pre><code class="julia hljs">plottype(::MyType) = Surface</code></pre>
+<h3 id=single_argument_conversion_with_convertsingleargument ><a href="#single_argument_conversion_with_convertsingleargument" class=header-anchor >Single Argument Conversion with convert<em>single</em>argument</a></h3>
+<p>Some types which are unknown to Makie can be converted to other types, for which <code>convert_arguments</code> methods are available. This is done with <code>convert_single_argument</code>.</p>
+<p>For example, <code>AbstractArrays</code> with <code>Real</code>s and <code>missing</code>s can usually be safely converted to <code>Float32</code> arrays with <code>NaN</code>s instead of <code>missing</code>s.</p>
+<p>The difference between <code>convert_single_argument</code> and <code>convert_arguments</code> with a single argument is that the former can be applied to any argument of any signature, while the latter only matches one-argument signatures.</p>
+<h2 id=full_recipes_with_the_recipe_macro ><a href="#full_recipes_with_the_recipe_macro" class=header-anchor >Full recipes with the <code>@recipe</code> macro</a></h2>
+<p>A full recipe comes in two parts. First is the plot type name, for example <code>MyPlot</code>, and then arguments and theme definition which are defined using the <code>@recipe</code> macro.</p>
+<p>Second is at least one custom <code>plot&#33;</code> method for <code>MyPlot</code> which creates an actual visualization using other existing plotting functions.</p>
+<p>We use an example to show how this works:</p>
+<pre><code class="julia hljs"><span class=hljs-meta >@recipe</span>(MyPlot, x, y, z) <span class=hljs-keyword >do</span> scene
+    Theme(
+        plot_color =&gt; :red
+    )
+<span class=hljs-keyword >end</span></code></pre>
+<p>This macro expands to several things. Firstly a type definition:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >const</span> MyPlot{ArgTypes} = Combined{myplot, ArgTypes}</code></pre>
+<p>The type parameter of <code>Combined</code> contains the function <code>myplot</code> instead of e.g. a symbol <code>MyPlot</code>. This way the mapping from <code>MyPlot</code> to <code>myplot</code> is safer and simpler. The following signatures are automatically defined to make <code>MyPlot</code> nice to use:</p>
+<pre><code class="julia hljs">myplot(args...; kw_args...) = ...
+myplot!(args...; kw_args...) = ...</code></pre>
+<p>A specialization of <code>argument_names</code> is emitted if you have an argument list <code>&#40;x,y,z&#41;</code> provided to the recipe macro:</p>
+<p>&#96;argument_names&#40;::Type&#123;&lt;: MyPlot&#125;&#41; &#61; &#40;:x, :y, :z&#41;&#96;</p>
+<p>This is optional but it will allow the use of <code>plot_object&#91;:x&#93;</code> to fetch the first argument from the call <code>plot_object &#61; myplot&#40;rand&#40;10&#41;, rand&#40;10&#41;, rand&#40;10&#41;&#41;</code>, for example.</p>
+<p>Alternatively you can always fetch the <code>i</code>th argument using <code>plot_object&#91;i&#93;</code>, and if you leave out the <code>&#40;x,y,z&#41;</code>, the default version of <code>argument_names</code> will provide <code>plot_object&#91;:arg1&#93;</code> etc.</p>
+<p>The theme given in the body of the <code>@recipe</code> invocation is inserted into a specialization of <code>default_theme</code> which inserts the theme into any scene that plots <code>Myplot</code>:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >function</span> default_theme(scene, ::Myplot)
+    Theme(
+        plot_color =&gt; :red
+    )
+<span class=hljs-keyword >end</span></code></pre>
+<p>As the second part of defining <code>MyPlot</code>, you should implement the actual plotting of the <code>MyPlot</code> object by specializing <code>plot&#33;</code>:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >function</span> plot!(myplot::MyPlot)
+    <span class=hljs-comment ># normal plotting code, building on any previously defined recipes</span>
+    <span class=hljs-comment ># or atomic plotting operations, and adding to the combined `myplot`:</span>
+    lines!(myplot, rand(<span class=hljs-number >10</span>), color = myplot[:plot_color])
+    plot!(myplot, myplot[:x], myplot[:y])
+    myplot
+<span class=hljs-keyword >end</span></code></pre>
+<p>It&#39;s possible to add specializations here, depending on the argument <em>types</em> supplied to <code>myplot</code>. For example, to specialize the behavior of <code>myplot&#40;a&#41;</code> when <code>a</code> is a 3D array of floating point numbers:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >const</span> MyVolume = MyPlot{<span class=hljs-built_in >Tuple</span>{&lt;:<span class=hljs-built_in >AbstractArray</span>{&lt;: <span class=hljs-built_in >AbstractFloat</span>, <span class=hljs-number >3</span>}}}
+argument_names(::<span class=hljs-built_in >Type</span>{&lt;: MyVolume}) = (:volume,) <span class=hljs-comment ># again, optional</span>
+<span class=hljs-keyword >function</span> plot!(plot::MyVolume)
+    <span class=hljs-comment ># plot a volume with a colormap going from fully transparent to plot_color</span>
+    volume!(plot, plot[:volume], colormap = :transparent =&gt; plot[:plot_color])
+    plot
+<span class=hljs-keyword >end</span></code></pre>
+<h2 id=example_stock_chart ><a href="#example_stock_chart" class=header-anchor >Example: Stock Chart</a></h2>
+<p>Let&#39;s say we want to visualize stock values with the classic open / close and low / high combinations. In this example, we will create a special type to hold this information, and a recipe that can plot this type.</p>
+<p>First, we make a struct to hold the stock&#39;s values for a given day:</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+<span class=hljs-keyword >struct</span> StockValue{T&lt;:<span class=hljs-built_in >Real</span>}
+    open::T
+    close::T
+    high::T
+    low::T
+<span class=hljs-keyword >end</span></code></pre>
+<p>Now we create a new plot type called <code>StockChart</code>. The <code>do scene</code> closure is just a function that returns our default attributes, in this case they color stocks going down red, and stocks going up green.</p>
+<pre><code class="julia hljs"><span class=hljs-meta >@recipe</span>(StockChart) <span class=hljs-keyword >do</span> scene
+    Attributes(
+        downcolor = :red,
+        upcolor = :green,
+    )
+<span class=hljs-keyword >end</span></code></pre>
+<p>Then we get to the meat of the recipe, which is actually creating a plot method. We need to overload a specific method of <code>Makie.plot&#33;</code> which as its argument has a subtype of our new <code>StockChart</code> plot type. The type parameter of that type is a Tuple describing the argument types for which this method should work.</p>
+<p>Note that the input arguments we receive inside the <code>plot&#33;</code> method, which we can extract by indexing into the <code>StockChart</code>, are automatically converted to Observables by Makie.</p>
+<p>This means that we must construct our plotting function in a dynamic way so that it will update itself whenever the input observables change. This can be a bit trickier than recipes you might know from other plotting packages which produce mostly static plots.</p>
+<pre><code class="julia hljs"><span class=hljs-keyword >function</span> Makie.plot!(
+        sc::StockChart{&lt;:<span class=hljs-built_in >Tuple</span>{<span class=hljs-built_in >AbstractVector</span>{&lt;:<span class=hljs-built_in >Real</span>}, <span class=hljs-built_in >AbstractVector</span>{&lt;:StockValue}}})
+
+    <span class=hljs-comment ># our first argument is an observable of parametric type AbstractVector{&lt;:Real}</span>
+    times = sc[<span class=hljs-number >1</span>]
+    <span class=hljs-comment ># our second argument is an observable of parametric type AbstractVector{&lt;:StockValue}}</span>
+    stockvalues = sc[<span class=hljs-number >2</span>]
+
+    <span class=hljs-comment ># we predefine a couple of observables for the linesegments</span>
+    <span class=hljs-comment ># and barplots we need to draw</span>
+    <span class=hljs-comment ># this is necessary because in Makie we want every recipe to be interactively updateable</span>
+    <span class=hljs-comment ># and therefore need to connect the observable machinery to do so</span>
+    linesegs = Node(Point2f0[])
+    bar_froms = Node(<span class=hljs-built_in >Float32</span>[])
+    bar_tos = Node(<span class=hljs-built_in >Float32</span>[])
+    colors = Node(<span class=hljs-built_in >Bool</span>[])
+
+    <span class=hljs-comment ># this helper function will update our observables</span>
+    <span class=hljs-comment ># whenever `times` or `stockvalues` change</span>
+    <span class=hljs-keyword >function</span> update_plot(times, stockvalues)
+        colors[]
+
+        <span class=hljs-comment ># clear the vectors inside the observables</span>
+        empty!(linesegs[])
+        empty!(bar_froms[])
+        empty!(bar_tos[])
+        empty!(colors[])
+
+        <span class=hljs-comment ># then refill them with our updated values</span>
+        <span class=hljs-keyword >for</span> (t, s) <span class=hljs-keyword >in</span> zip(times, stockvalues)
+            push!(linesegs[], Point2f0(t, s.low))
+            push!(linesegs[], Point2f0(t, s.high))
+            push!(bar_froms[], s.open)
+            push!(bar_tos[], s.close)
+        <span class=hljs-keyword >end</span>
+        append!(colors[], [x.close &gt; x.open <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> stockvalues])
+        colors[] = colors[]
+    <span class=hljs-keyword >end</span>
+
+    <span class=hljs-comment ># connect `update_plot` so that it is called whenever `times`</span>
+    <span class=hljs-comment ># or `stockvalues` change</span>
+    Makie.Observables.onany(update_plot, times, stockvalues)
+
+    <span class=hljs-comment ># then call it once manually with the first `times` and `stockvalues`</span>
+    <span class=hljs-comment ># contents so we prepopulate all observables with correct values</span>
+    update_plot(times[], stockvalues[])
+
+    <span class=hljs-comment ># for the colors we just use a vector of booleans or 0s and 1s, which are</span>
+    <span class=hljs-comment ># colored according to a 2-element colormap</span>
+    <span class=hljs-comment ># we build this colormap out of our `downcolor` and `upcolor`</span>
+    <span class=hljs-comment ># we give the observable element type `Any` so it will not error when we change</span>
+    <span class=hljs-comment ># a color from a symbol like :red to a different type like RGBf0(1, 0, 1)</span>
+    colormap = lift(<span class=hljs-built_in >Any</span>, sc.downcolor, sc.upcolor) <span class=hljs-keyword >do</span> dc, uc
+        [dc, uc]
+    <span class=hljs-keyword >end</span>
+
+    <span class=hljs-comment ># in the last step we plot into our `sc` StockChart object, which means</span>
+    <span class=hljs-comment ># that our new plot is just made out of two simpler recipes layered on</span>
+    <span class=hljs-comment ># top of each other</span>
+    linesegments!(sc, linesegs, color = colors, colormap = colormap)
+    barplot!(sc, times, bar_froms, fillto = bar_tos, color = colors, strokewidth = <span class=hljs-number >0</span>, colormap = colormap)
+
+    <span class=hljs-comment ># lastly we return the new StockChart</span>
+    sc
+<span class=hljs-keyword >end</span></code></pre>
+<p>Finally, let&#39;s try it out and plot some stocks:</p>
+<pre><code class="julia hljs">timestamps = <span class=hljs-number >1</span>:<span class=hljs-number >100</span>
+
+<span class=hljs-comment ># we create some fake stock values in a way that looks pleasing later</span>
+startvalue = StockValue(<span class=hljs-number >0.0</span>, <span class=hljs-number >0.0</span>, <span class=hljs-number >0.0</span>, <span class=hljs-number >0.0</span>)
+stockvalues = foldl(timestamps[<span class=hljs-number >2</span>:<span class=hljs-keyword >end</span>], init = [startvalue]) <span class=hljs-keyword >do</span> values, t
+    open = last(values).close + <span class=hljs-number >0.3</span> * randn()
+    close = open + randn()
+    high = max(open, close) + rand()
+    low = min(open, close) - rand()
+    push!(values, StockValue(
+        open, close, high, low
+    ))
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-comment ># now we can use our new recipe</span>
+f = Figure()
+
+stockchart(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], timestamps, stockvalues)
+
+<span class=hljs-comment ># and let&#x27;s try one where we change our default attributes</span>
+stockchart(f[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>], timestamps, stockvalues,
+    downcolor = :purple, upcolor = :orange)
+f</code></pre></p>
+<p>
+  <a id=example_1366018641080456634 >
+   <img src="/previews/PR1181/assets/documentation/recipes/code/output/example_1366018641080456634.png" alt=""> 
+  </a>
+  
+<p>As a last example, lets pretend our stock data is coming in dynamically, and we want to create an animation out of it. This is easy if we use observables as input arguments which we then update frame by frame:</p>
+<pre><code class="julia hljs">timestamps = Node(collect(<span class=hljs-number >1</span>:<span class=hljs-number >100</span>))
+stocknode = Node(stockvalues)
+
+fig, ax, sc = stockchart(timestamps, stocknode)
+
+record(fig, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;stockchart_animation.mp4&quot;</span>), <span class=hljs-number >101</span>:<span class=hljs-number >200</span>,
+        framerate = <span class=hljs-number >30</span>) <span class=hljs-keyword >do</span> t
+    <span class=hljs-comment ># push a new timestamp without triggering the observable</span>
+    push!(timestamps[], t)
+
+    <span class=hljs-comment ># push a new StockValue without triggering the observable</span>
+    old = last(stocknode[])
+    open = old.close + <span class=hljs-number >0.3</span> * randn()
+    close = open + randn()
+    high = max(open, close) + rand()
+    low = min(open, close) - rand()
+    new = StockValue(open, close, high, low)
+    push!(stocknode[], new)
+
+    <span class=hljs-comment ># now both timestamps and stocknode are synchronized</span>
+    <span class=hljs-comment ># again and we can trigger one of them by assigning it to itself</span>
+    <span class=hljs-comment ># to update the whole stockcharts plot for the new frame</span>
+    stocknode[] = stocknode[]
+    <span class=hljs-comment ># let&#x27;s also update the axis limits because the plot will grow</span>
+    <span class=hljs-comment ># to the right</span>
+    autolimits!(ax)
+<span class=hljs-keyword >end</span></code></pre>
+
+<video src="/previews/PR1181/assets/documentation/recipes/code/output/stockchart_animation.mp4" controls=true  loop=true ></video>
+
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

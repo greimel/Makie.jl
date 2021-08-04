@@ -1,0 +1,87 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>Inspecting Data</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=inspecting_data ><a href="#inspecting_data" class=header-anchor >Inspecting Data</a></h1> <p>Makie provides a data inspection tool via <code>DataInspector&#40;x&#41;</code> where x can be a figure, axis or scene. With it you get a floating tooltip with relevant information for various plots by hovering over one of its elements.</p> <p>By default the inspector will be able to pick any plot other than <code>text</code> and <code>volume</code> based plots. If you wish to ignore a plot, you can set its attribute <code>plot.inspectable&#91;&#93; &#61; false</code>. With that the next closest plot &#40;in range&#41; will be picked.</p> <h2 id=attributes_of_datainspector ><a href="#attributes_of_datainspector" class=header-anchor >Attributes of <code>DataInspector</code></a></h2> <p>The <code>inspector &#61; DataInspector&#40;fig&#41;</code> contains the following attributes:</p> <ul> <li><p><code>range &#61; 10</code>: Controls the snapping range for selecting an element of a plot.</p> <li><p><code>enabled &#61; true</code>: Disables inspection of plots when set to false. Can also be adjusted with <code>enable&#33;&#40;inspector&#41;</code> and <code>disable&#33;&#40;inspector&#41;</code>.</p> <li><p><code>text_padding &#61; Vec4f0&#40;5, 5, 3, 3&#41;</code>: Padding for the box drawn around the tooltip text. &#40;left, right, bottom, top&#41;</p> <li><p><code>text_align &#61; &#40;:left, :bottom&#41;</code>: Alignment of text within the tooltip. This does not affect the alignment of the tooltip relative to the cursor.</p> <li><p><code>textcolor &#61; :black</code>: Tooltip text color.</p> <li><p><code>textsize &#61; 20</code>: Tooltip text size.</p> <li><p><code>font &#61; &quot;Dejavu Sans&quot;</code>: Tooltip font.</p> <li><p><code>background_color &#61; :white</code>: Background color of the tooltip.</p> <li><p><code>outline_color &#61; :grey</code>: Outline color of the tooltip.</p> <li><p><code>outline_linestyle &#61; nothing</code>: Linestyle of the tooltip outline.</p> <li><p><code>outline_linewidth &#61; 2</code>: Linewidth of the tooltip outline.</p> <li><p><code>indicator_color &#61; :red</code>: Color of the selection indicator.</p> <li><p><code>indicator_linewidth &#61; 2</code>: Linewidth of the selection indicator.</p> <li><p><code>indicator_linestyle &#61; nothing</code>: Linestyle of the selection indicator</p> <li><p><code>tooltip_align &#61; &#40;:center, :top&#41;</code>: Default position of the tooltip relative to the cursor or current selection. The real align may adjust to keep the tooltip in view.</p> <li><p><code>tooltip_offset &#61; Vec2f0&#40;20&#41;</code>: Offset from the indicator to the tooltip.</p> <li><p><code>depth &#61; 9e3</code>: Depth value of the tooltip. This should be high so that the tooltip is always in front.</p> <li><p><code>priority &#61; 100</code>: The priority of creating a tooltip on a mouse movement or scrolling event.</p> </ul> <h2 id=extending_the_datainspector ><a href="#extending_the_datainspector" class=header-anchor >Extending the <code>DataInspector</code></a></h2> <p>The inspector implements tooltips for primitive plots and a few non-primitive &#40;i.e. a recipe&#41; plots. All other plots will fall back to tooltips of their hovered child. While this means that most plots have a tooltip it also means many may not have a fitting one. If you wish to implement a more fitting tooltip for non-primitive plot you may do so by creating a method</p> <pre><code class="julia hljs"><span class=hljs-keyword >function</span> show_data(inspector::DataInspector, my_plot::MyPlot, idx, primitive_child::SomePrimitive)
+    ...
+<span class=hljs-keyword >end</span></code></pre> <p>Here <code>my_plot</code> is the plot you want to create a custom tooltip for, <code>primitive_child</code> is one of the primitives your plot is made from and <code>idx</code> is the index into that primitive plot. The latter two are the result from <code>pick_sorted</code> at the mouseposition. In general you will need to adjust <code>idx</code> to be useful for <code>MyPlot</code>.</p> <p>Let&#39;s take a look at the <code>BarPlot</code> overload, which also powers <code>hist</code>. It contains two primitive plots - <code>Mesh</code> and <code>Lines</code>. The <code>idx</code> from picking a <code>Mesh</code> is based on vertices, which there are four per rectangle. From <code>Lines</code> we get an index based on the end point of the line. To draw the outline of a rectangle we need 5 points and a seperator, totaling 6. We thus implement</p> <pre><code class="julia hljs"><span class=hljs-keyword >import</span> Makie: show_data
+
+<span class=hljs-keyword >function</span> show_data(inspector::DataInspector, plot::BarPlot, idx, ::Lines)
+    <span class=hljs-keyword >return</span> show_barplot(inspector, plot, div(idx-<span class=hljs-number >1</span>, <span class=hljs-number >6</span>)+<span class=hljs-number >1</span>)
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-keyword >function</span> show_data(inspector::DataInspector, plot::BarPlot, idx, ::Mesh)
+    <span class=hljs-keyword >return</span> show_barplot(inspector, plot, div(idx-<span class=hljs-number >1</span>, <span class=hljs-number >4</span>)+<span class=hljs-number >1</span>)
+<span class=hljs-keyword >end</span></code></pre> <p>to map the primitive <code>idx</code> to one relevant for <code>BarPlot</code>. With this we can now get the position of the hovered bar with <code>plot&#91;1&#93;&#91;&#93;&#91;idx&#93;</code>. To align the tooltip to the selection we need to compute the relevant position in screen space and update the tooltip position.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Makie: parent_scene, shift_project, update_tooltip_alignment!, position2string
+
+<span class=hljs-keyword >function</span> show_barplot(inspector::DataInspector, plot::BarPlot, idx)
+    <span class=hljs-comment ># All the attributes of DataInspector are here</span>
+    a = inspector.plot.attributes
+
+    <span class=hljs-comment ># Get the scene BarPlot lives in</span>
+    scene = parent_scene(plot)
+
+    <span class=hljs-comment ># Get the hovered world-space position</span>
+    pos = plot[<span class=hljs-number >1</span>][][idx]
+    <span class=hljs-comment ># project to screen space and shift it to be correct on the root scene</span>
+    proj_pos = shift_project(scene, to_ndim(Point3f0, pos, <span class=hljs-number >0</span>))
+    <span class=hljs-comment ># anchor the tooltip at the projected position</span>
+    update_tooltip_alignment!(inspector, proj_pos)
+
+    <span class=hljs-comment ># Update the final text of the tooltip</span>
+    <span class=hljs-comment ># position2string is just an `@sprintf`</span>
+    a._display_text[] = position2string(pos)
+    <span class=hljs-comment ># Show the tooltip</span>
+    a._visible[] = <span class=hljs-literal >true</span>
+
+    <span class=hljs-comment ># return true to indicate that we have updated the tooltip</span>
+    <span class=hljs-keyword >return</span> <span class=hljs-literal >true</span>
+<span class=hljs-keyword >end</span></code></pre> <p>Next we need to mark the rectangle we are hovering. In this case we can use the rectangles which <code>BarPlot</code> passes to <code>Poly</code>, i.e. <code>plot.plots&#91;1&#93;&#91;1&#93;&#91;&#93;&#91;idx&#93;</code>. The <code>DataInspector</code> contains some functionality for keeping track of temporary plots, so we can plot the indicator to the same <code>scene</code> that <code>BarPlot</code> uses. Doing so results in</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> Makie:
+    parent_scene, shift_project, update_tooltip_alignment!, position2string,
+    clear_temporary_plots!
+
+
+<span class=hljs-keyword >function</span> show_barplot(inspector::DataInspector, plot::BarPlot, idx)
+    a = inspector.plot.attributes
+    scene = parent_scene(plot)
+
+    pos = plot[<span class=hljs-number >1</span>][][idx]
+    proj_pos = shift_project(scene, to_ndim(Point3f0, pos, <span class=hljs-number >0</span>))
+    update_tooltip_alignment!(inspector, proj_pos)
+
+    <span class=hljs-comment ># Get the rectangle BarPlot generated for Poly</span>
+    <span class=hljs-comment ># `_bbox2D` is a node meant for saving a `Rect2D` indicator. There is also</span>
+    <span class=hljs-comment ># a `_bbox3D`. Here we keep `_bbox2D` updated and use it as a source for</span>
+    <span class=hljs-comment ># our custom indicator.</span>
+    a._bbox2D[] = plot.plots[<span class=hljs-number >1</span>][<span class=hljs-number >1</span>][][idx]
+    a._model[] = plot.model[]
+
+    <span class=hljs-comment ># Only plot the indicator once. It&#x27;ll be updated via `_bbox2D`.</span>
+    <span class=hljs-keyword >if</span> inspector.selection != plot
+        <span class=hljs-comment ># Clear any old temporary plots (i.e. other indicators like this)</span>
+        <span class=hljs-comment ># this also updates inspector.selection.</span>
+        clear_temporary_plots!(inspector, plot)
+
+        <span class=hljs-comment ># create the indicator using a bunch of the DataInspector attributes.</span>
+        <span class=hljs-comment ># Note that temporary plots only cleared when a new one is created. To</span>
+        <span class=hljs-comment ># control whether indicator is visible or not `a._bbox_visible` is set</span>
+        <span class=hljs-comment ># instead, so it should be in any custom indicator like this.</span>
+        p = wireframe!(
+            scene, a._bbox2D, model = a._model, color = a.indicator_color,
+            strokewidth = a.indicator_linewidth, linestyle = a.indicator_linestyle,
+            visible = a._bbox_visible, show_axis = <span class=hljs-literal >false</span>, inspectable = <span class=hljs-literal >false</span>
+        )
+
+        <span class=hljs-comment ># Make sure this draws on top</span>
+        translate!(p, Vec3f0(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>, a.depth[]))
+
+        <span class=hljs-comment ># register this indicator for later cleanup.</span>
+        push!(inspector.temp_plots, p)
+    <span class=hljs-keyword >end</span>
+
+    a._display_text[] = position2string(pos)
+    a._visible[] = <span class=hljs-literal >true</span>
+
+    <span class=hljs-comment ># Show our custom indicator</span>
+    a._bbox_visible[] = <span class=hljs-literal >true</span>
+    <span class=hljs-comment ># Don&#x27;t show the default screen space indicator</span>
+    a._px_bbox_visible[] = <span class=hljs-literal >false</span>
+
+    <span class=hljs-keyword >return</span> <span class=hljs-literal >true</span>
+<span class=hljs-keyword >end</span></code></pre> <p>which finishes the implementation of a custom tooltip for <code>BarPlot</code>.</p> <div class=page-foot > <div class=copyright > &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </div> </div> <div class=page__footer > <footer> <div class=page__footer-follow > <ul class=social-icons > <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a> <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a> </ul> </div> <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div> <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p> </footer> </div> <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script> <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

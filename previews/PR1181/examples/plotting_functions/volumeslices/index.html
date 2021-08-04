@@ -1,0 +1,75 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>volumeslices</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=volumeslices ><a href="#volumeslices" class=header-anchor >volumeslices</a></h1> <div class=docstring > <h2 class=doc-header  id=volumeslices > <a href="#volumeslices">volumeslices</a> <div class=doc-type ></div> </h2> <div class=doc-content ><p>VolumeSlices</p> <pre><code class="julia hljs">volumeslices(x, y, z, v)</code></pre>
+<p>Draws heatmap slices of the volume v</p>
+<h2 id=attributes ><a href="#attributes" class=header-anchor >Attributes</a></h2>
+<p>Available attributes and their defaults for <code>MakieCore.Combined&#123;Makie.volumeslices, T&#125; where T</code> are: </p>
+<pre><code class="julia hljs">colorrange  MakieCore.Automatic()
+  heatmap     Attributes with <span class=hljs-number >0</span> entries</code></pre>
+</div>
+  </div>
+
+<h3 id=examples ><a href="#examples" class=header-anchor >Examples</a></h3>
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+
+fig = Figure()
+ax = LScene(fig[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], scenekw=(show_axis=<span class=hljs-literal >false</span>,))
+
+x = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-literal >π</span>, <span class=hljs-number >50</span>)
+y = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >2</span><span class=hljs-literal >π</span>, <span class=hljs-number >100</span>)
+z = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >3</span><span class=hljs-literal >π</span>, <span class=hljs-number >150</span>)
+
+lsgrid = labelslidergrid!(
+  fig,
+  [<span class=hljs-string >&quot;yz plane - x axis&quot;</span>, <span class=hljs-string >&quot;xz plane - y axis&quot;</span>, <span class=hljs-string >&quot;xy plane - z axis&quot;</span>],
+  [<span class=hljs-number >1</span>:length(x), <span class=hljs-number >1</span>:length(y), <span class=hljs-number >1</span>:length(z)]
+)
+fig[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>] = lsgrid.layout
+
+vol = [cos(X)*sin(Y)*sin(Z) <span class=hljs-keyword >for</span> X ∈ x, Y ∈ y, Z ∈ z]
+plt = volumeslices!(ax, x, y, z, vol)
+
+<span class=hljs-comment ># connect sliders to `volumeslices` update methods</span>
+sl_yz, sl_xz, sl_xy = lsgrid.sliders
+
+on(sl_yz.value) <span class=hljs-keyword >do</span> v; plt[:update_yz][](v) <span class=hljs-keyword >end</span>
+on(sl_xz.value) <span class=hljs-keyword >do</span> v; plt[:update_xz][](v) <span class=hljs-keyword >end</span>
+on(sl_xy.value) <span class=hljs-keyword >do</span> v; plt[:update_xy][](v) <span class=hljs-keyword >end</span>
+
+set_close_to!(sl_yz, <span class=hljs-number >.5</span>length(x))
+set_close_to!(sl_xz, <span class=hljs-number >.5</span>length(y))
+set_close_to!(sl_xy, <span class=hljs-number >.5</span>length(z))
+
+<span class=hljs-comment ># cam3d!(ax.scene, projectiontype=Makie.Orthographic)</span>
+
+fig</code></pre></p>
+<p>
+  <a id=example_5203360342513263086 >
+   <img src="/previews/PR1181/assets/examples/plotting_functions/volumeslices/code/output/example_5203360342513263086.png" alt=""> 
+  </a>
+  
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

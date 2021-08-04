@@ -1,0 +1,65 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>Animations</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=animations ><a href="#animations" class=header-anchor >Animations</a></h1> <p>With Makie it is easy to create animated plots. Animations work by making changes to data or plot attribute Observables and recording the changing figure frame by frame. You can find out more about the Observables workflow on the <a href="@ref">Observables &amp; Interaction</a> page.</p> <h2 id=a_simple_example ><a href="#a_simple_example" class=header-anchor >A simple example</a></h2> <p>To create an animation you need to use the <a href="@ref"><code>record</code></a> function.</p> <p>First you create a <code>Figure</code>. Next, you pass a function that modifies this figure frame-by-frame to <code>record</code>. Any changes you make to the figure or its plots will appear in the final animation. You also need to pass an iterable which has as many elements as you want frames in your animation. The function that you pass as the first argument is called with each element from this iterator over the course of the animation.</p> <p>As a start, here is how you can change the color of a line plot:</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+<span class=hljs-keyword >using</span> Makie.Colors
+
+fig, ax, lineplot = lines(<span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin; linewidth=<span class=hljs-number >10</span>)
+
+<span class=hljs-comment ># animation settings</span>
+nframes = <span class=hljs-number >30</span>
+framerate = <span class=hljs-number >30</span>
+hue_iterator = range(<span class=hljs-number >0</span>, <span class=hljs-number >360</span>, length=nframes)
+
+record(fig, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;color_animation.mp4&quot;</span>), hue_iterator;
+        framerate = framerate) <span class=hljs-keyword >do</span> hue
+    lineplot.color = HSV(hue, <span class=hljs-number >1</span>, <span class=hljs-number >0.75</span>)
+<span class=hljs-keyword >end</span></code></pre> <video src="/previews/PR1181/assets/documentation/animation/code/output/color_animation.mp4" controls=true  loop=true ></video> <p>Passing a function as the first argument is usually done with Julia&#39;s <code>do</code>-notation, which you might not be familiar with. Instead of the above, we could also have written:</p> <pre><code class="julia hljs"><span class=hljs-keyword >function</span> change_function(hue)
+    lineplot.color = HSV(hue, <span class=hljs-number >1</span>, <span class=hljs-number >0.75</span>)
+<span class=hljs-keyword >end</span>
+
+record(change_function, fig, <span class=hljs-string >&quot;color_animation.mp4&quot;</span>, hue_iterator; framerate = framerate)</code></pre> <h2 id=file_formats ><a href="#file_formats" class=header-anchor >File formats</a></h2> <p>Video files are created with <a href="https://github.com/JuliaIO/FFMPEG.jl"><code>FFMPEG.jl</code></a>. You can choose from the following file formats:</p> <ul> <li><p><code>.mkv</code> &#40;the default, doesn&#39;t need to convert&#41;</p> <li><p><code>.mp4</code> &#40;good for web, widely supported&#41;</p> <li><p><code>.webm</code> &#40;smallest file size&#41;</p> <li><p><code>.gif</code> &#40;lowest quality with largest file size&#41;</p> </ul> <h2 id=animations_using_observables ><a href="#animations_using_observables" class=header-anchor >Animations using <code>Observables</code></a></h2> <p>Often, you want to animate a complex plot over time, and all the data that is displayed should be determined by the current time stamp. Such a dependency is really easy to express with <code>Observables</code> or <code>Nodes</code>.</p> <p>We can save a lot of work if we create our data depending on a single time <code>Node</code>, so we don&#39;t have to change every plot&#39;s data manually as the animation progresses.</p> <p>Here is an example that plots two different functions. The y-values of each depend on time and therefore we only have to change the time for both plots to change. We use the convenient <code>@lift</code> macro which denotes that the <code>lift</code>ed expression depends on each Observable marked with a <code>&#36;</code> sign.</p> <pre><code class="julia hljs">time = Node(<span class=hljs-number >0.0</span>)
+
+xs = range(<span class=hljs-number >0</span>, <span class=hljs-number >7</span>, length=<span class=hljs-number >40</span>)
+
+ys_1 = <span class=hljs-meta >@lift</span>(sin.(xs .- $time))
+ys_2 = <span class=hljs-meta >@lift</span>(cos.(xs .- $time) .+ <span class=hljs-number >3</span>)
+
+fig = lines(xs, ys_1, color = :blue, linewidth = <span class=hljs-number >4</span>,
+    axis = (title = <span class=hljs-meta >@lift</span>(<span class=hljs-string >&quot;t = <span class=hljs-subst >$(round($time, digits = <span class=hljs-number >1</span>)</span>)&quot;</span>),))
+scatter!(xs, ys_2, color = :red, markersize = <span class=hljs-number >15</span>)
+
+framerate = <span class=hljs-number >30</span>
+timestamps = range(<span class=hljs-number >0</span>, <span class=hljs-number >2</span>, step=<span class=hljs-number >1</span>/framerate)
+
+record(fig, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;time_animation.mp4&quot;</span>), timestamps;
+        framerate = framerate) <span class=hljs-keyword >do</span> t
+    time[] = t
+<span class=hljs-keyword >end</span></code></pre> <video src="/previews/PR1181/assets/documentation/animation/code/output/time_animation.mp4" controls=true  loop=true ></video> <p>You can set most plot attributes equal to <code>Observable</code>s, so that you need only update a single variable &#40;like time&#41; during your animation loop.</p> <p>For example, to make a line with color dependent on time, you could write:</p> <pre><code class="julia hljs">time = Node(<span class=hljs-number >0.0</span>)
+color_observable = <span class=hljs-meta >@lift</span>(RGBf0($time, <span class=hljs-number >0</span>, <span class=hljs-number >0</span>))
+
+fig = lines(<span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin, color = color_observable)
+
+record(fig, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;color_animation_2.mp4&quot;</span>), timestamps; framerate = framerate) <span class=hljs-keyword >do</span> t
+    time[] = t
+<span class=hljs-keyword >end</span></code></pre> <video src="/previews/PR1181/assets/documentation/animation/code/output/color_animation_2.mp4" controls=true  loop=true ></video> <h2 id=appending_data_with_observables ><a href="#appending_data_with_observables" class=header-anchor >Appending data with Observables</a></h2> <p>You can also append data to a plot during an animation. Instead of passing <code>x</code> and <code>y</code> &#40;or <code>z</code>&#41; values separately, it is better to make a <code>Node</code> with a vector of <code>Point</code>s, so that the number of <code>x</code> and <code>y</code> values can not go out of sync.</p> <pre><code class="julia hljs">points = Node(Point2f0[(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>)])
+
+fig, ax = scatter(points)
+limits!(ax, <span class=hljs-number >0</span>, <span class=hljs-number >30</span>, <span class=hljs-number >0</span>, <span class=hljs-number >30</span>)
+
+frames = <span class=hljs-number >1</span>:<span class=hljs-number >30</span>
+
+record(fig, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;append_animation.mp4&quot;</span>), frames;
+        framerate = <span class=hljs-number >30</span>) <span class=hljs-keyword >do</span> frame
+    new_point = Point2f0(frame, frame)
+    points[] = push!(points[], new_point)
+<span class=hljs-keyword >end</span></code></pre> <video src="/previews/PR1181/assets/documentation/animation/code/output/append_animation.mp4" controls=true  loop=true ></video> <h2 id=animating_a_plot_live ><a href="#animating_a_plot_live" class=header-anchor >Animating a plot &quot;live&quot;</a></h2> <p>You can animate a live plot easily using a loop. Update all <code>Observables</code> that you need and then add a short sleep interval so that the display can refresh:</p> <pre><code class="julia hljs">points = Node(Point2f0[randn(<span class=hljs-number >2</span>)])
+
+fig, ax = scatter(points)
+limits!(ax, -<span class=hljs-number >4</span>, <span class=hljs-number >4</span>, -<span class=hljs-number >4</span>, <span class=hljs-number >4</span>)
+
+fps = <span class=hljs-number >60</span>
+nframes = <span class=hljs-number >120</span>
+
+<span class=hljs-keyword >for</span> i = <span class=hljs-number >1</span>:nframes
+    new_point = Point2f0(randn(<span class=hljs-number >2</span>))
+    points[] = push!(points[], new_point)
+    sleep(<span class=hljs-number >1</span>/fps) <span class=hljs-comment ># refreshes the display!</span>
+<span class=hljs-keyword >end</span></code></pre> <div class=page-foot > <div class=copyright > &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </div> </div> <div class=page__footer > <footer> <div class=page__footer-follow > <ul class=social-icons > <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a> <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a> </ul> </div> <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div> <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p> </footer> </div> <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script> <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

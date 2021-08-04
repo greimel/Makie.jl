@@ -1,0 +1,73 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>Axis3</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=axis3 ><a href="#axis3" class=header-anchor >Axis3</a></h1> <h2 id=viewing_angles ><a href="#viewing_angles" class=header-anchor >Viewing angles</a></h2> <p>The two attributes <code>azimuth</code> and <code>elevation</code> control the angles from which the plots are viewed.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+<span class=hljs-keyword >using</span> FileIO
+
+f = Figure(resolution = (<span class=hljs-number >1000</span>, <span class=hljs-number >1000</span>), fontsize = <span class=hljs-number >10</span>)
+
+brain = load(assetpath(<span class=hljs-string >&quot;brain.stl&quot;</span>))
+colors = [tri[<span class=hljs-number >1</span>][<span class=hljs-number >2</span>] <span class=hljs-keyword >for</span> tri <span class=hljs-keyword >in</span> brain <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+
+azimuths = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >2</span><span class=hljs-literal >pi</span>, <span class=hljs-number >8</span>)[<span class=hljs-number >1</span>:<span class=hljs-number >7</span>]
+elevations = <span class=hljs-built_in >LinRange</span>(-<span class=hljs-literal >pi</span>/<span class=hljs-number >2</span> + <span class=hljs-number >0.01</span>, <span class=hljs-literal >pi</span>/<span class=hljs-number >2</span> - <span class=hljs-number >0.01</span>, <span class=hljs-number >8</span>)[<span class=hljs-number >1</span>:<span class=hljs-number >7</span>]
+
+<span class=hljs-keyword >for</span> (i, elevation) <span class=hljs-keyword >in</span> enumerate(elevations)
+    <span class=hljs-keyword >for</span> (j, azimuth) <span class=hljs-keyword >in</span> enumerate(azimuths)
+        ax = Axis3(f[i, j], aspect = :data,
+        title = <span class=hljs-string >&quot;elevation = <span class=hljs-subst >$(round(elevation/<span class=hljs-literal >pi</span>, digits = <span class=hljs-number >2</span>)</span>)π\nazimuth = <span class=hljs-subst >$(round(azimuth/<span class=hljs-literal >pi</span>, digits = <span class=hljs-number >2</span>)</span>)π&quot;</span>,
+        elevation = elevation, azimuth = azimuth,
+        protrusions = (<span class=hljs-number >0</span>, <span class=hljs-number >0</span>, <span class=hljs-number >0</span>, <span class=hljs-number >20</span>))
+
+        hidedecorations!(ax)
+        mesh!(brain, color = colors, colormap = :thermal)
+    <span class=hljs-keyword >end</span>
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_11925788351545684107 > <img src="/previews/PR1181/assets/examples/layoutables/axis3/code/output/example_11925788351545684107.png" alt=""> </a> <h2 id=data_aspects_and_view_mode ><a href="#data_aspects_and_view_mode" class=header-anchor >Data aspects and view mode</a></h2> <p>The attributes <code>aspect</code> and <code>viewmode</code> both influence the apparent relative scaling of the three axes.</p> <h3 id=aspect ><a href="#aspect" class=header-anchor ><code>aspect</code></a></h3> <p>The <code>aspect</code> changes how long each axis is relative to the other two.</p> <p>If you set it to <code>:data</code>, the axes will be scaled according to their lengths in data space. The visual result is that objects with known real-world dimensions look correct and not squished.</p> <p>You can also set it to a three-tuple, where each number gives the relative length of that axis vs the others.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+<span class=hljs-keyword >using</span> FileIO
+
+f = Figure(resolution = (<span class=hljs-number >1000</span>, <span class=hljs-number >800</span>), fontsize = <span class=hljs-number >14</span>)
+
+brain = load(assetpath(<span class=hljs-string >&quot;brain.stl&quot;</span>))
+
+aspects = [:data, (<span class=hljs-number >1</span>, <span class=hljs-number >1</span>, <span class=hljs-number >1</span>), (<span class=hljs-number >1</span>, <span class=hljs-number >2</span>, <span class=hljs-number >3</span>), (<span class=hljs-number >3</span>, <span class=hljs-number >2</span>, <span class=hljs-number >1</span>)]
+
+<span class=hljs-keyword >for</span> (i, aspect) <span class=hljs-keyword >in</span> enumerate(aspects)
+    ax = Axis3(f[fldmod1(i, <span class=hljs-number >2</span>)...], aspect = aspect, title = <span class=hljs-string >&quot;<span class=hljs-variable >$aspect</span>&quot;</span>)
+    mesh!(brain, color = :bisque)
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_16812174062482771854 > <img src="/previews/PR1181/assets/examples/layoutables/axis3/code/output/example_16812174062482771854.png" alt=""> </a> <h3 id=viewmode ><a href="#viewmode" class=header-anchor ><code>viewmode</code></a></h3> <p>The <code>viewmode</code> changes how the final projection is adjusted to fit the axis into its scene.</p> <p>The default is <code>:fitzoom</code>, which scales the final projection evenly, so that the farthest corner of the axis goes right up to the scene boundary. If you rotate an axis with this mode, the apparent size will shrink and grow depending on the viewing angles, but the plot objects will never look skewed relative to their <code>aspect</code>.</p> <p>The next option <code>:fit</code> is like <code>:fitzoom</code>, but without the zoom component. The axis is scaled so that no matter what the viewing angles are, the axis does not clip the scene boundary and its apparent size doesn&#39;t change, even though this makes less efficient use of the available space. You can imagine a sphere around the axis, which is zoomed right up until it touches the scene boundary.</p> <p>The last option is <code>:stretch</code>. In this mode, scaling in both x and y direction is applied to fit the axis right into its scene box. Be aware that this mode can skew the axis a lot and doesn&#39;t keep the <code>aspect</code> intact. On the other hand, it uses the available space most efficiently.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+
+f = Figure(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >1000</span>), fontsize = <span class=hljs-number >14</span>)
+
+r = <span class=hljs-built_in >LinRange</span>(-<span class=hljs-number >1</span>, <span class=hljs-number >1</span>, <span class=hljs-number >100</span>)
+cube = [(x.^<span class=hljs-number >2</span> + y.^<span class=hljs-number >2</span> + z.^<span class=hljs-number >2</span>) <span class=hljs-keyword >for</span> x = r, y = r, z = r]
+cube_with_holes = cube .* (cube .&gt; <span class=hljs-number >1.4</span>)
+
+viewmodes = [:fitzoom, :fit, :stretch]
+
+<span class=hljs-keyword >for</span> (j, viewmode) <span class=hljs-keyword >in</span> enumerate(viewmodes)
+    <span class=hljs-keyword >for</span> (i, azimuth) <span class=hljs-keyword >in</span> enumerate([<span class=hljs-number >1.1</span>, <span class=hljs-number >1.275</span>, <span class=hljs-number >1.45</span>] .* <span class=hljs-literal >pi</span>)
+        Box(f[i, j], color = :transparent, strokecolor = :gray80)
+        ax = Axis3(f[i, j], aspect = :data,
+            azimuth = azimuth,
+            viewmode = viewmode, title = <span class=hljs-string >&quot;<span class=hljs-variable >$viewmode</span>&quot;</span>)
+        volume!(cube_with_holes, algorithm = :iso, isorange = <span class=hljs-number >0.05</span>, isovalue = <span class=hljs-number >1.7</span>)
+    <span class=hljs-keyword >end</span>
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_9680969876944861613 > <img src="/previews/PR1181/assets/examples/layoutables/axis3/code/output/example_9680969876944861613.png" alt=""> </a> <h2 id=perspective_or_orthographic_look ><a href="#perspective_or_orthographic_look" class=header-anchor >Perspective or orthographic look</a></h2> <p>You can switch smoothly between an orthographic look and a perspective look using the <code>perspectiveness</code> attribute.</p> <p>A value of 0 looks like an orthographic projection &#40;it is only approximate to a real one&#41; while 1 gives a quite strong perspective look.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> GLMakie
+
+f = Figure(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >800</span>), fontsize = <span class=hljs-number >14</span>)
+
+xs = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >100</span>)
+ys = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >100</span>)
+zs = [cos(x) * sin(y) <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> xs, y <span class=hljs-keyword >in</span> ys]
+
+<span class=hljs-keyword >for</span> (i, perspectiveness) <span class=hljs-keyword >in</span> enumerate(<span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >1</span>, <span class=hljs-number >6</span>))
+    Axis3(f[fldmod1(i, <span class=hljs-number >3</span>)...], perspectiveness = perspectiveness,
+        title = <span class=hljs-string >&quot;<span class=hljs-variable >$perspectiveness</span>&quot;</span>)
+
+    surface!(xs, ys, zs)
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_11039715485053054699 > <img src="/previews/PR1181/assets/examples/layoutables/axis3/code/output/example_11039715485053054699.png" alt=""> </a> <div class=page-foot > <div class=copyright > &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>. </div> </div> </div> </div> </div> <div class=page__footer > <footer> <div class=page__footer-follow > <ul class=social-icons > <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a> <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a> </ul> </div> <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div> <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p> </footer> </div> <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script> <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>

@@ -1,0 +1,399 @@
+<!doctype html> <!-- Minimal Mistakes Jekyll Theme 4.16.4 by Michael Rose Copyright 2013-2019 Michael Rose - mademistakes.com | @mmistakes Free for personal and commercial use under the MIT license https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE --> <html lang=en > <meta charset=UTF-8 > <meta name=viewport  content="width=device-width, initial-scale=1"> <link rel=stylesheet  href="/previews/PR1181/libs/highlight/github.min.css"> <link rel=stylesheet  href="/previews/PR1181/css/franklin.css"> <link rel=stylesheet  href="/previews/PR1181/css/minimal-mistakes.css"> <link rel=stylesheet  href="/previews/PR1181/css/makie.css"> <link rel=icon  href="/previews/PR1181/assets/icon_transparent.png"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel=stylesheet  type="text/css"/> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel=stylesheet  type="text/css"/> <!--[if IE ]> <style> /* old IE unsupported flexbox fixes */ .greedy-nav .site-title { padding-right: 3em; } .greedy-nav button { position: absolute; top: 0; right: 0; height: 100%; } </style> <![endif]--> <title>Axis</title> <body class=layout--single > <div class=masthead > <div class=masthead__inner-wrap > <div class=masthead__menu > <nav id=site-nav  class=greedy-nav > <a class=title-icon  href="/previews/PR1181/"><img src="/previews/PR1181/assets/makie_logo_transparent.svg"/></a> <ul class=visible-links > <li class=masthead__menu-item > <a href="https://github.com/JuliaPlots/Makie.jl"><img src="/previews/PR1181/assets/GitHub-Mark-64px.png" class=masthead-icon  /></a> <li class=masthead__menu-item ><a href="/previews/PR1181/examples/">Examples</a> <li class=masthead__menu-item ><a href="/previews/PR1181/tutorials/">Tutorials</a> <li class=masthead__menu-item ><a href="/previews/PR1181/documentation/">Documentation</a> </ul> <button class="greedy-nav__toggle hidden" type=button > <span class=visually-hidden >Toggle menu</span> <div class=navicon ></div> </button> <ul class="hidden-links hidden"></ul> </nav> </div> </div> </div> <div class=initial-content > <div id=main  role=main > <div class=franklin-content ><h1 id=axis ><a href="#axis" class=header-anchor >Axis</a></h1> <h2 id=creating_an_axis ><a href="#creating_an_axis" class=header-anchor >Creating an Axis</a></h2> <p>The <code>Axis</code> is a 2D axis that works well with automatic layouts. Here&#39;s how you create one</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+ax = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], xlabel = <span class=hljs-string >&quot;x label&quot;</span>, ylabel = <span class=hljs-string >&quot;y label&quot;</span>,
+    title = <span class=hljs-string >&quot;Title&quot;</span>)
+
+f</code></pre></p> <p> <a id=example_3360942468698197528 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_3360942468698197528.png" alt=""> </a> <h2 id=plotting_into_an_axis ><a href="#plotting_into_an_axis" class=header-anchor >Plotting into an Axis</a></h2> <p>You can use all the normal mutating 2D plotting functions with an <code>Axis</code>. These functions return the created plot object. Omitting the <code>ax</code> argument plots into the <code>current_axis&#40;&#41;</code>, which is usually the axis that was last created.</p> <pre><code class="julia hljs">lineobject = lines!(ax, <span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin, color = :red)
+scatobject = scatter!(<span class=hljs-number >0</span>:<span class=hljs-number >0.5</span>:<span class=hljs-number >10</span>, cos, color = :orange)
+
+f</code></pre></p> <p> <a id=example_2295400384729396002 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_2295400384729396002.png" alt=""> </a> <h2 id=deleting_plots ><a href="#deleting_plots" class=header-anchor >Deleting plots</a></h2> <p>You can delete a plot object directly via <code>delete&#33;&#40;ax, plotobj&#41;</code>. You can also remove all plots with <code>empty&#33;&#40;ax&#41;</code>.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+axs = [Axis(f[<span class=hljs-number >1</span>, i]) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+
+scatters = map(axs) <span class=hljs-keyword >do</span> ax
+    [scatter!(ax, <span class=hljs-number >0</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >10</span>, x -&gt; sin(x) + i) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+<span class=hljs-keyword >end</span>
+
+delete!(axs[<span class=hljs-number >2</span>], scatters[<span class=hljs-number >2</span>][<span class=hljs-number >2</span>])
+empty!(axs[<span class=hljs-number >3</span>])
+
+f</code></pre></p> <p> <a id=example_11619216609528783952 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_11619216609528783952.png" alt=""> </a> <h2 id=setting_axis_limits_and_reversing_axes ><a href="#setting_axis_limits_and_reversing_axes" class=header-anchor >Setting Axis limits and reversing axes</a></h2> <p>You can set axis limits with the functions <code>xlims&#33;</code>, <code>ylims&#33;</code> or <code>limits&#33;</code>. The numbers are meant in the order left right for <code>xlims&#33;</code>, and bottom top for <code>ylims&#33;</code>. Therefore, if the second number is smaller than the first, the respective axis will reverse. You can manually reverse an axis by setting <code>ax.xreversed &#61; true</code> or <code>ax.yreversed &#61; true</code>.</p> <p>Note that if you enforce an aspect ratio between x-axis and y-axis using <code>autolimitaspect</code>, the values you set with these functions will probably not be exactly what you get, but they will be changed to fit the chosen ratio.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+axes = [Axis(f[i, j]) <span class=hljs-keyword >for</span> j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>, i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>]
+
+<span class=hljs-keyword >for</span> (i, ax) <span class=hljs-keyword >in</span> enumerate(axes)
+    ax.title = <span class=hljs-string >&quot;Axis <span class=hljs-variable >$i</span>&quot;</span>
+    poly!(ax, Point2f0[(<span class=hljs-number >9</span>, <span class=hljs-number >9</span>), (<span class=hljs-number >3</span>, <span class=hljs-number >1</span>), (<span class=hljs-number >1</span>, <span class=hljs-number >3</span>)],
+        color = cgrad(:inferno, <span class=hljs-number >6</span>, categorical = <span class=hljs-literal >true</span>)[i])
+<span class=hljs-keyword >end</span>
+
+xlims!(axes[<span class=hljs-number >1</span>], [<span class=hljs-number >0</span>, <span class=hljs-number >10</span>]) <span class=hljs-comment ># as vector</span>
+xlims!(axes[<span class=hljs-number >2</span>], <span class=hljs-number >10</span>, <span class=hljs-number >0</span>) <span class=hljs-comment ># separate, reversed</span>
+ylims!(axes[<span class=hljs-number >3</span>], <span class=hljs-number >0</span>, <span class=hljs-number >10</span>) <span class=hljs-comment ># separate</span>
+ylims!(axes[<span class=hljs-number >4</span>], (<span class=hljs-number >10</span>, <span class=hljs-number >0</span>)) <span class=hljs-comment ># as tuple, reversed</span>
+limits!(axes[<span class=hljs-number >5</span>], <span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >0</span>, <span class=hljs-number >10</span>) <span class=hljs-comment ># x1, x2, y1, y2</span>
+limits!(axes[<span class=hljs-number >6</span>], BBox(<span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >0</span>, <span class=hljs-number >10</span>)) <span class=hljs-comment ># as rectangle</span>
+
+f</code></pre></p> <p> <a id=example_14580039765171469777 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_14580039765171469777.png" alt=""> </a> <h3 id=setting_half-automatic_limits ><a href="#setting_half-automatic_limits" class=header-anchor >Setting half-automatic limits</a></h3> <p>You can set half limits by either giving one argument as <code>nothing</code> or by using the keyword syntax where only <code>low</code> or <code>high</code> is given.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+data = rand(<span class=hljs-number >100</span>, <span class=hljs-number >2</span>) .* <span class=hljs-number >0.7</span> .+ <span class=hljs-number >0.15</span>
+
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], title = <span class=hljs-string >&quot;xlims!(nothing, 1)&quot;</span>)
+scatter!(data)
+xlims!(<span class=hljs-literal >nothing</span>, <span class=hljs-number >1</span>)
+
+Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>], title = <span class=hljs-string >&quot;xlims!(low = 0)&quot;</span>)
+scatter!(data)
+xlims!(low = <span class=hljs-number >0</span>)
+
+Axis(f[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>], title = <span class=hljs-string >&quot;ylims!(0, nothing)&quot;</span>)
+scatter!(data)
+ylims!(<span class=hljs-number >0</span>, <span class=hljs-literal >nothing</span>)
+
+Axis(f[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>], title = <span class=hljs-string >&quot;ylims!(high = 1)&quot;</span>)
+scatter!(data)
+ylims!(high = <span class=hljs-number >1</span>)
+
+f</code></pre></p> <p> <a id=example_17889597297920463892 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_17889597297920463892.png" alt=""> </a> <p>This also works when specifying limits directly, such as <code>Axis&#40;..., limits &#61; &#40;nothing, 1, 2, nothing&#41;&#41;</code>.</p> <h3 id=auto-reset_behavior ><a href="#auto-reset_behavior" class=header-anchor >Auto-reset behavior</a></h3> <p>When you create a new plot in an axis, <code>reset_limits&#33;&#40;ax&#41;</code> is called, which adjusts the limits to the new bounds. If you have previously set limits with <code>limits&#33;</code>, <code>xlims&#33;</code> or <code>ylims&#33;</code>, these limits are not overridden by the new plot. If you want to override the manually set limits, call <code>autolimits&#33;&#40;ax&#41;</code> to compute completely new limits from the axis content.</p> <p>The user-defined limits are stored in <code>ax.limits</code>. This can either be a tuple with two entries, where each entry can be either <code>nothing</code> or a tuple with numbers <code>&#40;low, high&#41;</code>.It can also be a tuple with four numbers <code>&#40;xlow, xhigh, ylow, yhigh&#41;</code>. You can pass this directly when creating a new axis. The same observable <code>limits</code> is also set using <code>limits&#33;</code>, <code>xlims&#33;</code> and <code>ylims&#33;</code>, or reset to <code>&#40;nothing, nothing&#41;</code> using <code>autolimits&#33;</code>.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+lines(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], <span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin)
+lines(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>], <span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin, axis = (limits = (<span class=hljs-number >0</span>, <span class=hljs-number >10</span>, -<span class=hljs-number >1</span>, <span class=hljs-number >1</span>),))
+
+f</code></pre></p> <p> <a id=example_9051838447984116325 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_9051838447984116325.png" alt=""> </a> <h2 id=modifying_ticks ><a href="#modifying_ticks" class=header-anchor >Modifying ticks</a></h2> <p>To control ticks, you can set the axis attributes <code>xticks/yticks</code> and <code>xtickformat/ytickformat</code>.</p> <p>You can overload one or more of these three functions to implement custom ticks:</p> <pre><code class="julia hljs">tickvalues, ticklabels = MakieLayout.get_ticks(ticks, scale, formatter, vmin, vmax)
+tickvalues = MakieLayout.get_tickvalues(ticks, vmin, vmax)
+ticklabels = MakieLayout.get_ticklabels(formatter, tickvalues)</code></pre> <p>If you overload <code>get_ticks</code>, you have to compute both tickvalues and ticklabels directly as a vector of floats and strings, respectively. Otherwise the result of <code>get_tickvalues</code> is passed to <code>get_ticklabels</code> by default. The limits of the respective axis are passed as <code>vmin</code> and <code>vmax</code>.</p> <p>A couple of behaviors are implemented by default. You can specify static ticks by passing an iterable of numbers. You can also pass a tuple with tick values and tick labels directly, bypassing the formatting step.</p> <p>As a third option you can pass a function taking minimum and maximum axis value as arguments and returning either a vector of tickvalues which are then passed to the current formatter, or a tuple with tickvalues and ticklabels which are then used directly.</p> <p>For formatting, you can pass a function which takes a vector of numbers and outputs a vector of strings. You can also pass a format string which is passed to <code>Formatting.format</code> from <a href="https://github.com/JuliaIO/Formatting.jl">Formatting.jl</a>, where you can mix the formatted numbers with other text like in <code>&quot;&#123;:.2f&#125;ms&quot;</code>.</p> <h3 id=predefined_ticks ><a href="#predefined_ticks" class=header-anchor >Predefined ticks</a></h3> <p>The default tick type is <code>LinearTicks&#40;n&#41;</code>, where <code>n</code> is the target number of ticks which the algorithm tries to return.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+fig = Figure()
+<span class=hljs-keyword >for</span> (i, n) <span class=hljs-keyword >in</span> enumerate([<span class=hljs-number >2</span>, <span class=hljs-number >5</span>, <span class=hljs-number >9</span>])
+    lines(fig[i, <span class=hljs-number >1</span>], <span class=hljs-number >0.</span><span class=hljs-number >.20</span>, sin, axis = (xticks = LinearTicks(n),))
+<span class=hljs-keyword >end</span>
+fig</code></pre></p> <p> <a id=example_2188070473603704267 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_2188070473603704267.png" alt=""> </a> <p>There&#39;s also <code>WilkinsonTicks</code> which uses the alternative Wilkinson algorithm.</p> <p><code>MultiplesTicks</code> can be used when an axis should be marked at multiples of a certain number. A common scenario is plotting a trigonometric function which should be marked at pi intervals.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+lines(<span class=hljs-number >0.</span><span class=hljs-number >.20</span>, sin, axis = (xticks = MultiplesTicks(<span class=hljs-number >4</span>, <span class=hljs-literal >pi</span>, <span class=hljs-string >&quot;π&quot;</span>),))</code></pre></p> <p> <a id=example_11338119643795288532 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_11338119643795288532.png" alt=""> </a> <p>Here are a couple of examples that show off different settings for ticks and formats.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >900</span>))
+
+axes = layout[] = [Axis(scene) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>, j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>]
+
+xs = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0</span>, <span class=hljs-number >2</span><span class=hljs-literal >pi</span>, <span class=hljs-number >50</span>)
+<span class=hljs-keyword >for</span> (i, ax) <span class=hljs-keyword >in</span> enumerate(axes)
+    ax.title = <span class=hljs-string >&quot;Axis <span class=hljs-variable >$i</span>&quot;</span>
+    lines!(ax, xs, sin.(xs))
+<span class=hljs-keyword >end</span>
+
+axes[<span class=hljs-number >1</span>].xticks = <span class=hljs-number >0</span>:<span class=hljs-number >6</span>
+
+axes[<span class=hljs-number >2</span>].xticks = <span class=hljs-number >0</span>:<span class=hljs-literal >pi</span>:<span class=hljs-number >2</span><span class=hljs-literal >pi</span>
+axes[<span class=hljs-number >2</span>].xtickformat = xs -&gt; [<span class=hljs-string >&quot;<span class=hljs-subst >$(x/<span class=hljs-literal >pi</span>)</span>π&quot;</span> <span class=hljs-keyword >for</span> x <span class=hljs-keyword >in</span> xs]
+
+axes[<span class=hljs-number >3</span>].xticks = (<span class=hljs-number >0</span>:<span class=hljs-literal >pi</span>:<span class=hljs-number >2</span><span class=hljs-literal >pi</span>, [<span class=hljs-string >&quot;start&quot;</span>, <span class=hljs-string >&quot;middle&quot;</span>, <span class=hljs-string >&quot;end&quot;</span>])
+
+axes[<span class=hljs-number >4</span>].xticks = <span class=hljs-number >0</span>:<span class=hljs-literal >pi</span>:<span class=hljs-number >2</span><span class=hljs-literal >pi</span>
+axes[<span class=hljs-number >4</span>].xtickformat = <span class=hljs-string >&quot;{:.2f}ms&quot;</span>
+axes[<span class=hljs-number >4</span>].xlabel = <span class=hljs-string >&quot;Time&quot;</span>
+
+
+scene</code></pre></p> <p> <a id=example_749004342754896004 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_749004342754896004.png" alt=""> </a> <h2 id=minor_ticks_and_grids ><a href="#minor_ticks_and_grids" class=header-anchor >Minor ticks and grids</a></h2> <p>You can show minor ticks and grids by setting <code>x/yminorticksvisible &#61; true</code> and <code>x/yminorgridvisible &#61; true</code> which are off by default. You can set size, color, width, align etc. like for the normal ticks, but there are no labels. The <code>x/yminorticks</code> attributes control how minor ticks are computed given major ticks and axis limits. For that purpose you can create your own minortick type and overload <code>MakieLayout.get_minor_tickvalues&#40;minorticks, tickvalues, vmin, vmax&#41;</code>.</p> <p>The default minor tick type is <code>IntervalsBetween&#40;n, mirror &#61; true&#41;</code> where <code>n</code> gives the number of intervals each gap between major ticks is divided into with minor ticks, and <code>mirror</code> decides if outside of the major ticks there are more minor ticks with the same intervals as the adjacent gaps.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+theme = Attributes(
+    Axis = (
+        xminorticksvisible = <span class=hljs-literal >true</span>,
+        yminorticksvisible = <span class=hljs-literal >true</span>,
+        xminorgridvisible = <span class=hljs-literal >true</span>,
+        yminorgridvisible = <span class=hljs-literal >true</span>,
+    )
+)
+
+fig = with_theme(theme) <span class=hljs-keyword >do</span>
+    fig = Figure()
+    axs = [Axis(fig[fldmod1(n, <span class=hljs-number >2</span>)...],
+        title = <span class=hljs-string >&quot;IntervalsBetween(<span class=hljs-subst >$(n+<span class=hljs-number >1</span>)</span>)&quot;</span>,
+        xminorticks = IntervalsBetween(n+<span class=hljs-number >1</span>),
+        yminorticks = IntervalsBetween(n+<span class=hljs-number >1</span>)) <span class=hljs-keyword >for</span> n <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >4</span>]
+    fig
+<span class=hljs-keyword >end</span>
+
+fig</code></pre></p> <p> <a id=example_9080452699255241236 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_9080452699255241236.png" alt=""> </a> <h2 id=hiding_axis_spines_and_decorations ><a href="#hiding_axis_spines_and_decorations" class=header-anchor >Hiding Axis spines and decorations</a></h2> <p>You can hide all axis elements manually, by setting their specific visibility attributes to <code>false</code>, like <code>xticklabelsvisible</code>, but that can be tedious. There are a couple of convenience functions for this.</p> <p>To hide spines, you can use <code>hidespines&#33;</code>.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+ax1 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], title = <span class=hljs-string >&quot;Axis 1&quot;</span>)
+ax2 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>], title = <span class=hljs-string >&quot;Axis 2&quot;</span>)
+
+hidespines!(ax1)
+hidespines!(ax2, :t, :r) <span class=hljs-comment ># only top and right</span>
+
+f</code></pre></p> <p> <a id=example_5057962070469521878 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_5057962070469521878.png" alt=""> </a> <p>To hide decorations, you can use <code>hidedecorations&#33;</code>, or the specific <code>hidexdecorations&#33;</code> and <code>hideydecorations&#33;</code>. When hiding, you can set <code>label &#61; false</code>, <code>ticklabels &#61; false</code>, <code>ticks &#61; false</code>, <code>grid &#61; false</code>, <code>minorgrid &#61; false</code> or <code>minorticks &#61; false</code> as keyword arguments if you want to keep those elements. It&#39;s common, e.g., to hide everything but the grid lines in facet plots.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+ax1 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], title = <span class=hljs-string >&quot;Axis 1&quot;</span>)
+ax2 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>], title = <span class=hljs-string >&quot;Axis 2&quot;</span>)
+ax3 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>], title = <span class=hljs-string >&quot;Axis 3&quot;</span>)
+
+hidedecorations!(ax1)
+hidexdecorations!(ax2, grid = <span class=hljs-literal >false</span>)
+hideydecorations!(ax3, ticks = <span class=hljs-literal >false</span>)
+
+f</code></pre></p> <p> <a id=example_10489693896678002476 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_10489693896678002476.png" alt=""> </a> <h2 id=log_scales_and_other_axis_scales ><a href="#log_scales_and_other_axis_scales" class=header-anchor >Log scales and other axis scales</a></h2> <p>The two attributes <code>xscale</code> and <code>yscale</code>, which by default are set to <code>identity</code>, can be used to project the data in a nonlinear way, in addition to the linear zoom that the limits provide.</p> <p>Take care that the axis limits always stay inside the limits appropriate for the chosen scaling function, for example, <code>log</code> functions fail for values <code>x &lt;&#61; 0</code>, <code>sqrt</code> for <code>x &lt; 0</code>, etc.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+data = <span class=hljs-built_in >LinRange</span>(<span class=hljs-number >0.01</span>, <span class=hljs-number >0.99</span>, <span class=hljs-number >200</span>)
+
+f = Figure(resolution = (<span class=hljs-number >800</span>, <span class=hljs-number >800</span>))
+
+<span class=hljs-keyword >for</span> (i, scale) <span class=hljs-keyword >in</span> enumerate([identity, log10, log2, log, sqrt, Makie.logit])
+
+    row, col = fldmod1(i, <span class=hljs-number >2</span>)
+    Axis(f[row, col], yscale = scale, title = string(scale),
+        yminorticksvisible = <span class=hljs-literal >true</span>, yminorgridvisible = <span class=hljs-literal >true</span>,
+        yminorticks = IntervalsBetween(<span class=hljs-number >8</span>))
+
+    lines!(data, color = :blue)
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_5548253370067866882 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_5548253370067866882.png" alt=""> </a> <h3 id=pseudolog_and_symlog_scales ><a href="#pseudolog_and_symlog_scales" class=header-anchor >Pseudolog and symlog scales</a></h3> <p>Some plotting functions, like barplots or density plots, have offset parameters which are usually zero, which you have to set to some non-zero value explicitly so they work in <code>log</code> axes.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+processors = [<span class=hljs-string >&quot;VAX-11/780&quot;</span>, <span class=hljs-string >&quot;Sun-4/260&quot;</span>, <span class=hljs-string >&quot;PowerPC 604&quot;</span>,
+    <span class=hljs-string >&quot;Alpha 21164&quot;</span>, <span class=hljs-string >&quot;Intel Pentium III&quot;</span>, <span class=hljs-string >&quot;Intel Xeon&quot;</span>]
+relative_speeds = [<span class=hljs-number >1</span>, <span class=hljs-number >9</span>, <span class=hljs-number >117</span>, <span class=hljs-number >280</span>, <span class=hljs-number >1779</span>, <span class=hljs-number >6505</span>]
+
+barplot(relative_speeds, fillto = <span class=hljs-number >0.5</span>,
+    axis = (yscale = log10, ylabel =<span class=hljs-string >&quot;relative speed&quot;</span>,
+        xticks = (<span class=hljs-number >1</span>:<span class=hljs-number >6</span>, processors), xticklabelrotation = <span class=hljs-literal >pi</span>/<span class=hljs-number >8</span>))
+
+ylims!(<span class=hljs-number >0.5</span>, <span class=hljs-number >10000</span>)
+current_figure()</code></pre></p> <p> <a id=example_14294748689859113481 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_14294748689859113481.png" alt=""> </a> <p>Another option are pseudolog and symlog scales. Pseudolog is similar to log, but modified in order to work for zero and for negative values. The <code>pseudolog10</code> function is defined as <code>sign&#40;x&#41; * log10&#40;abs&#40;x&#41; &#43; 1&#41;</code>.</p> <p>Another option for symmetric log scales including zero is the symmetric log scale <code>Symlog10</code>, which combines a normal log scale with a linear scale between two boundary values around zero.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure(resolution = (<span class=hljs-number >800</span>, <span class=hljs-number >700</span>))
+
+lines(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], -<span class=hljs-number >100</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >100</span>, axis = (
+    yscale = Makie.pseudolog10,
+    title = <span class=hljs-string >&quot;Pseudolog scale&quot;</span>,
+    yticks = [-<span class=hljs-number >100</span>, -<span class=hljs-number >10</span>, -<span class=hljs-number >1</span>, <span class=hljs-number >0</span>, <span class=hljs-number >1</span>, <span class=hljs-number >10</span>, <span class=hljs-number >100</span>]))
+
+lines(f[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>], -<span class=hljs-number >100</span>:<span class=hljs-number >0.1</span>:<span class=hljs-number >100</span>, axis = (
+    yscale = Makie.Symlog10(<span class=hljs-number >10.0</span>),
+    title = <span class=hljs-string >&quot;Symlog10 with linear scaling between -10 and 10&quot;</span>,
+    yticks = [-<span class=hljs-number >100</span>, -<span class=hljs-number >10</span>, <span class=hljs-number >0</span>, <span class=hljs-number >10</span>, <span class=hljs-number >100</span>]))
+
+f</code></pre></p> <p> <a id=example_10209522166838304940 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_10209522166838304940.png" alt=""> </a> <h2 id=controlling_axis_aspect_ratios ><a href="#controlling_axis_aspect_ratios" class=header-anchor >Controlling Axis aspect ratios</a></h2> <p>If you&#39;re plotting images, you might want to force a specific aspect ratio of an axis, so that the images are not stretched. The default is that an axis uses all of the available space in the layout. You can use <code>AxisAspect</code> and <code>DataAspect</code> to control the aspect ratio. For example, <code>AxisAspect&#40;1&#41;</code> forces a square axis and <code>AxisAspect&#40;2&#41;</code> results in a rectangle with a width of two times the height. <code>DataAspect</code> uses the currently chosen axis limits and brings the axes into the same aspect ratio. This is the easiest to use with images. A different aspect ratio can only reduce the axis space that is being used, also it necessarily has to break the layout a little bit.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+<span class=hljs-keyword >using</span> FileIO
+
+f = Figure()
+
+axes = [Axis(f[i, j]) <span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>, j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >3</span>]
+tightlimits!.(axes)
+
+img = rotr90(load(assetpath(<span class=hljs-string >&quot;cow.png&quot;</span>)))
+
+<span class=hljs-keyword >for</span> ax <span class=hljs-keyword >in</span> axes
+    image!(ax, img)
+<span class=hljs-keyword >end</span>
+
+axes[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>].title = <span class=hljs-string >&quot;Default&quot;</span>
+
+axes[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>].title = <span class=hljs-string >&quot;DataAspect&quot;</span>
+axes[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>].aspect = DataAspect()
+
+axes[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>].title = <span class=hljs-string >&quot;AxisAspect(418/348)&quot;</span>
+axes[<span class=hljs-number >1</span>, <span class=hljs-number >3</span>].aspect = AxisAspect(<span class=hljs-number >418</span>/<span class=hljs-number >348</span>)
+
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>].title = <span class=hljs-string >&quot;AxisAspect(1)&quot;</span>
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >1</span>].aspect = AxisAspect(<span class=hljs-number >1</span>)
+
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>].title = <span class=hljs-string >&quot;AxisAspect(2)&quot;</span>
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>].aspect = AxisAspect(<span class=hljs-number >2</span>)
+
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >3</span>].title = <span class=hljs-string >&quot;AxisAspect(2/3)&quot;</span>
+axes[<span class=hljs-number >2</span>, <span class=hljs-number >3</span>].aspect = AxisAspect(<span class=hljs-number >2</span>/<span class=hljs-number >3</span>)
+
+f</code></pre></p> <p> <a id=example_16163597923448181211 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_16163597923448181211.png" alt=""> </a> <h2 id=controlling_data_aspect_ratios ><a href="#controlling_data_aspect_ratios" class=header-anchor >Controlling data aspect ratios</a></h2> <p>If you want the content of an axis to adhere to a certain data aspect ratio, there is another way than forcing the aspect ratio of the whole axis to be the same, and possibly breaking the layout. This works via the axis attribute <code>autolimitaspect</code>. It can either be set to <code>nothing</code> which means the data limits can have any arbitrary aspect ratio. Or it can be set to a number, in which case the targeted limits of the axis &#40;that are computed by <code>autolimits&#33;</code>&#41; are enlarged to have the correct aspect ratio.</p> <p>You can see the different ways to get a plot with an unstretched circle, using different ways of setting aspect ratios, in the following example.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+<span class=hljs-keyword >using</span> Animations
+
+
+
+<span class=hljs-comment ># scene setup for animation</span>
+<span class=hljs-comment >###########################################################</span>
+
+container_scene = Scene(camera = campixel!, resolution = (<span class=hljs-number >1200</span>, <span class=hljs-number >1200</span>))
+
+t = Node(<span class=hljs-number >0.0</span>)
+
+a_width = Animation([<span class=hljs-number >1</span>, <span class=hljs-number >7</span>], [<span class=hljs-number >1200.0</span>, <span class=hljs-number >800</span>], sineio(n=<span class=hljs-number >2</span>, yoyo=<span class=hljs-literal >true</span>, postwait=<span class=hljs-number >0.5</span>))
+a_height = Animation([<span class=hljs-number >2.5</span>, <span class=hljs-number >8.5</span>], [<span class=hljs-number >1200.0</span>, <span class=hljs-number >800</span>], sineio(n=<span class=hljs-number >2</span>, yoyo=<span class=hljs-literal >true</span>, postwait=<span class=hljs-number >0.5</span>))
+
+scene_area = lift(t) <span class=hljs-keyword >do</span> t
+    IRect(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>, round(<span class=hljs-built_in >Int</span>, a_width(t)), round(<span class=hljs-built_in >Int</span>, a_height(t)))
+<span class=hljs-keyword >end</span>
+
+scene = Scene(container_scene, scene_area, camera = campixel!)
+
+rect = poly!(scene, scene_area,
+    raw=<span class=hljs-literal >true</span>, color=RGBf0(<span class=hljs-number >0.97</span>, <span class=hljs-number >0.97</span>, <span class=hljs-number >0.97</span>), strokecolor=:transparent, strokewidth=<span class=hljs-number >0</span>)
+
+outer_layout = GridLayout(scene, alignmode = Outside(<span class=hljs-number >30</span>))
+
+
+
+
+<span class=hljs-comment ># example begins here</span>
+<span class=hljs-comment >###########################################################</span>
+
+layout = outer_layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = GridLayout()
+
+titles = [<span class=hljs-string >&quot;aspect enforced\nvia layout&quot;</span>, <span class=hljs-string >&quot;axis aspect\nset directly&quot;</span>, <span class=hljs-string >&quot;no aspect enforced&quot;</span>, <span class=hljs-string >&quot;data aspect conforms\nto axis size&quot;</span>]
+axs = layout[<span class=hljs-number >1</span>:<span class=hljs-number >2</span>, <span class=hljs-number >1</span>:<span class=hljs-number >2</span>] = [Axis(scene, title = t) <span class=hljs-keyword >for</span> t <span class=hljs-keyword >in</span> titles]
+
+<span class=hljs-keyword >for</span> a <span class=hljs-keyword >in</span> axs
+    lines!(a, Circle(Point2f0(<span class=hljs-number >0</span>, <span class=hljs-number >0</span>), <span class=hljs-number >100f0</span>))
+<span class=hljs-keyword >end</span>
+
+rowsize!(layout, <span class=hljs-number >1</span>, Fixed(<span class=hljs-number >400</span>))
+<span class=hljs-comment ># force the layout cell [1, 1] to be square</span>
+colsize!(layout, <span class=hljs-number >1</span>, Aspect(<span class=hljs-number >1</span>, <span class=hljs-number >1</span>))
+
+axs[<span class=hljs-number >2</span>].aspect = <span class=hljs-number >1</span>
+axs[<span class=hljs-number >4</span>].autolimitaspect = <span class=hljs-number >1</span>
+
+rects = layout[<span class=hljs-number >1</span>:<span class=hljs-number >2</span>, <span class=hljs-number >1</span>:<span class=hljs-number >2</span>] = [Box(scene, color = (:black, <span class=hljs-number >0.05</span>),
+    strokecolor = :transparent) <span class=hljs-keyword >for</span> _ <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >4</span>]
+
+record(container_scene, joinpath(<span class=hljs-meta >@OUTPUT</span>, <span class=hljs-string >&quot;example_circle_aspect_ratios.mp4&quot;</span>), <span class=hljs-number >0</span>:<span class=hljs-number >1</span>/<span class=hljs-number >30</span>:<span class=hljs-number >9</span>; framerate=<span class=hljs-number >30</span>) <span class=hljs-keyword >do</span> ti
+    t[] = ti
+<span class=hljs-keyword >end</span></code></pre> <video src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_circle_aspect_ratios.mp4" controls=true  loop=true ></video> <h2 id=linking_axes ><a href="#linking_axes" class=header-anchor >Linking axes</a></h2> <p>You can link axes to each other. Every axis simply keeps track of a list of other axes which it updates when it is changed itself. You can link x and y dimensions separately.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+ax1 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>])
+ax2 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>])
+ax3 = Axis(f[<span class=hljs-number >2</span>, <span class=hljs-number >2</span>])
+
+linkyaxes!(ax1, ax2)
+linkxaxes!(ax2, ax3)
+
+ax1.title = <span class=hljs-string >&quot;y linked&quot;</span>
+ax2.title = <span class=hljs-string >&quot;x &amp; y linked&quot;</span>
+ax3.title = <span class=hljs-string >&quot;x linked&quot;</span>
+
+<span class=hljs-keyword >for</span> (i, ax) <span class=hljs-keyword >in</span> enumerate([ax1, ax2, ax3])
+    lines!(ax, <span class=hljs-number >1</span>:<span class=hljs-number >10</span>, <span class=hljs-number >1</span>:<span class=hljs-number >10</span>, color = <span class=hljs-string >&quot;green&quot;</span>)
+    <span class=hljs-keyword >if</span> i != <span class=hljs-number >1</span>
+        lines!(ax, <span class=hljs-number >11</span>:<span class=hljs-number >20</span>, <span class=hljs-number >1</span>:<span class=hljs-number >10</span>, color = <span class=hljs-string >&quot;red&quot;</span>)
+    <span class=hljs-keyword >end</span>
+    <span class=hljs-keyword >if</span> i != <span class=hljs-number >3</span>
+        lines!(ax, <span class=hljs-number >1</span>:<span class=hljs-number >10</span>, <span class=hljs-number >11</span>:<span class=hljs-number >20</span>, color = <span class=hljs-string >&quot;blue&quot;</span>)
+    <span class=hljs-keyword >end</span>
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_15048921401751857813 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_15048921401751857813.png" alt=""> </a> <h2 id=changing_x_and_y_axis_position ><a href="#changing_x_and_y_axis_position" class=header-anchor >Changing x and y axis position</a></h2> <p>By default, the x axis is at the bottom, and the y axis at the left side. You can change this with the attributes <code>xaxisposition &#61; :top</code> and <code>yaxisposition &#61; :right</code>.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+<span class=hljs-keyword >for</span> i <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>, j <span class=hljs-keyword >in</span> <span class=hljs-number >1</span>:<span class=hljs-number >2</span>
+    Axis(
+        f[i, j],
+        limits = (<span class=hljs-number >0</span>, <span class=hljs-number >5</span>, <span class=hljs-number >0</span>, <span class=hljs-number >5</span>),
+        xaxisposition = (i == <span class=hljs-number >1</span> ? :top : :bottom),
+        yaxisposition = (j == <span class=hljs-number >1</span> ? :left : :right))
+<span class=hljs-keyword >end</span>
+
+f</code></pre></p> <p> <a id=example_10289922321771100928 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_10289922321771100928.png" alt=""> </a> <h2 id=creating_a_twin_axis ><a href="#creating_a_twin_axis" class=header-anchor >Creating a twin axis</a></h2> <p>There is currently no dedicated function to do this, but you can simply add an Axis on top of another, then hide everything but the second axis.</p> <p>Here&#39;s an example how to do this with a second y axis on the right.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+f = Figure()
+
+ax1 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], yticklabelcolor = :blue)
+ax2 = Axis(f[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>], yticklabelcolor = :red, yaxisposition = :right)
+hidespines!(ax2)
+hidexdecorations!(ax2)
+
+lines!(ax1, <span class=hljs-number >0.</span><span class=hljs-number >.10</span>, sin, color = :blue)
+lines!(ax2, <span class=hljs-number >0.</span><span class=hljs-number >.10</span>, x -&gt; <span class=hljs-number >100</span> * cos(x), color = :red)
+
+f</code></pre></p> <p> <a id=example_2115761524578697646 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_2115761524578697646.png" alt=""> </a> <h2 id=axis_interaction ><a href="#axis_interaction" class=header-anchor >Axis interaction</a></h2> <p>An Axis has a couple of predefined interactions enabled.</p> <h3 id=scroll_zoom ><a href="#scroll_zoom" class=header-anchor >Scroll Zoom</a></h3> <p>You can zoom in an axis by scrolling in and out. If you press x or y while scrolling, the zoom movement is restricted to that dimension. These keys can be changed with the attributes <code>xzoomkey</code> and <code>yzoomkey</code>. You can also restrict the zoom dimensions all the time by setting the axis attributes <code>xzoomlock</code> or <code>yzoomlock</code> to <code>true</code>.</p> <h3 id=drag_pan ><a href="#drag_pan" class=header-anchor >Drag Pan</a></h3> <p>You can pan around the axis by right-clicking and dragging. If you press x or y while panning, the pan movement is restricted to that dimension. These keys can be changed with the attributes <code>xpankey</code> and <code>ypankey</code>. You can also restrict the pan dimensions all the time by setting the axis attributes <code>xpanlock</code> or <code>ypanlock</code> to <code>true</code>.</p> <h3 id=limit_reset ><a href="#limit_reset" class=header-anchor >Limit Reset</a></h3> <p>You can reset the limits with <code>ctrl &#43; leftclick</code>. This is the same as doing <code>reset_limits&#33;&#40;ax&#41;</code>. This sets the limits back to the values stored in <code>ax.limits</code>, and if they are <code>nothing</code>, computes them automatically. If you have previously called <code>limits&#33;</code>, <code>xlims&#33;</code> or <code>ylims&#33;</code>, these settings therefore stay intact when doing a limit reset.</p> <p>You can alternatively press <code>ctrl &#43; shift &#43; leftclick</code>, which is the same as calling <code>autolimits&#33;&#40;ax&#41;</code>. This function ignores previously set limits and computes them all anew given the axis content.</p> <h3 id=rectangle_selection_zoom ><a href="#rectangle_selection_zoom" class=header-anchor >Rectangle Selection Zoom</a></h3> <p>Left-click and drag zooms into the selected rectangular area. If you press x or y while panning, only the respective dimension is affected. You can also restrict the selection zoom dimensions all the time by setting the axis attributes <code>xrectzoom</code> or <code>yrectzoom</code> to <code>true</code>.</p> <h3 id=custom_interactions ><a href="#custom_interactions" class=header-anchor >Custom Interactions</a></h3> <p>The interaction system is an additional abstraction upon Makie&#39;s low-level event system to make it easier to quickly create your own interaction patterns.</p> <h4 id=registering_and_deregistering_interactions ><a href="#registering_and_deregistering_interactions" class=header-anchor >Registering and deregistering interactions</a></h4> <p>To register a new interaction, call <code>register_interaction&#33;&#40;ax, name::Symbol, interaction&#41;</code>. The <code>interaction</code> argument can be of any type.</p> <p>To remove an existing interaction completely, call <code>deregister_interaction&#33;&#40;ax, name::Symbol&#41;</code>. You can check which interactions are currently active by calling <code>interactions&#40;ax&#41;</code>.</p> <h4 id=activating_and_deactivating_interactions ><a href="#activating_and_deactivating_interactions" class=header-anchor >Activating and deactivating interactions</a></h4> <p>Often, you don&#39;t want to remove an interaction entirely but only disable it for a moment, then reenable it again. You can use the functions <code>activate_interaction&#33;&#40;ax, name::Symbol&#41;</code> and <code>deactivate_interaction&#33;&#40;ax, name::Symbol&#41;</code> for that.</p> <h4 id=function_interaction ><a href="#function_interaction" class=header-anchor ><code>Function</code> Interaction</a></h4> <p>If <code>interaction</code> is a <code>Function</code>, it should accept two arguments, which correspond to an event and the axis. This function will then be called whenever the axis generates an event.</p> <p>Here&#39;s an example of such a function. Note that we use the special dispatch signature for Functions that allows to use the <code>do</code>-syntax:</p> <pre><code class="julia hljs">register_interaction!(ax, :my_interaction) <span class=hljs-keyword >do</span> event::MouseEvent, axis
+    <span class=hljs-keyword >if</span> event.type === MouseEventTypes.leftclick
+        println(<span class=hljs-string >&quot;You clicked on the axis!&quot;</span>)
+    <span class=hljs-keyword >end</span>
+<span class=hljs-keyword >end</span></code></pre> <p>As you can see, it&#39;s possible to restrict the type parameter of the event argument. Choices are one of <code>MouseEvent</code>, <code>KeysEvent</code> or <code>ScrollEvent</code> if you only want to handle a specific class. Your function can also have multiple methods dealing with each type.</p> <h4 id=custom_object_interaction ><a href="#custom_object_interaction" class=header-anchor >Custom Object Interaction</a></h4> <p>The function option is most suitable for interactions that don&#39;t involve much state. A more verbose but flexible option is available. For this, you define a new type which typically holds all the state variables you&#39;re interested in.</p> <p>Whenever the axis generates an event, it calls <code>process_interaction&#40;interaction, event, axis&#41;</code> on all stored interactions. By defining <code>process_interaction</code> for specific types of interaction and event, you can create more complex interaction patterns.</p> <p>Here&#39;s an example with simple state handling where we allow left clicks while l is pressed, and right clicks while r is pressed:</p> <pre><code class="julia hljs"><span class=hljs-keyword >mutable struct</span> MyInteraction
+    allow_left_click::<span class=hljs-built_in >Bool</span>
+    allow_right_click::<span class=hljs-built_in >Bool</span>
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-keyword >function</span> MakieLayout.process_interaction(interaction::MyInteraction, event::MouseEvent, axis)
+    <span class=hljs-keyword >if</span> interaction.use_left_click &amp;&amp; event.type === MouseEventTypes.leftclick
+        println(<span class=hljs-string >&quot;Left click in correct mode&quot;</span>)
+    <span class=hljs-keyword >end</span>
+    <span class=hljs-keyword >if</span> interaction.allow_right_click &amp;&amp; event.type === MouseEventTypes.rightclick
+        println(<span class=hljs-string >&quot;Right click in correct mode&quot;</span>)
+    <span class=hljs-keyword >end</span>
+<span class=hljs-keyword >end</span>
+
+<span class=hljs-keyword >function</span> MakieLayout.process_interaction(interaction::MyInteraction, event::KeysEvent, axis)
+    interaction.allow_left_click = Keyboard.l <span class=hljs-keyword >in</span> event.keys
+    interaction.allow_right_click = Keyboard.r <span class=hljs-keyword >in</span> event.keys
+<span class=hljs-keyword >end</span>
+
+register_interaction!(ax, :left_and_right, MyInteraction(<span class=hljs-literal >false</span>, <span class=hljs-literal >false</span>))</code></pre> <h4 id=setup_and_cleanup ><a href="#setup_and_cleanup" class=header-anchor >Setup and Cleanup</a></h4> <p>Some interactions might have more complex state involving plot objects that need to be setup or removed. For those purposes, you can overload the methods <code>registration_setup&#33;&#40;parent, interaction&#41;</code> and <code>deregistration_cleanup&#33;&#40;parent, interaction&#41;</code> which are called during registration and deregistration, respectively.</p> <h2 id=special_plots ><a href="#special_plots" class=header-anchor >Special Plots</a></h2> <p>A few special plot functions currently only work specifically with the <code>Axis</code> type.</p> <h3 id=vertical_horizontal_lines ><a href="#vertical_horizontal_lines" class=header-anchor >Vertical / Horizontal Lines</a></h3> <p>Often, it&#39;s useful to mark horizontal or vertical locations in a plot with lines that span a certain percentage of the axis, not the data. There are two functions <code>hlines&#33;</code> and <code>vlines&#33;</code> which work with <code>Axis</code> instances.</p> <p>The positional argument gives one or many locations in data coordinates, while the keyword arguments <code>xmin</code> and <code>xmax</code> &#40;for hlines&#41; or <code>ymin</code> and <code>ymax</code> &#40;for vlines&#41; specify the extent along the axis. These values can also be a single number or an iterable.</p> <pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+
+scene, layout = layoutscene(resolution = (<span class=hljs-number >1400</span>, <span class=hljs-number >900</span>))
+ax1 = layout[<span class=hljs-number >1</span>, <span class=hljs-number >1</span>] = Axis(scene, title = <span class=hljs-string >&quot;vlines&quot;</span>)
+
+lines!(ax1, <span class=hljs-number >0.</span><span class=hljs-number >.4</span><span class=hljs-literal >pi</span>, sin)
+vlines!(ax1, [<span class=hljs-literal >pi</span>, <span class=hljs-number >2</span><span class=hljs-literal >pi</span>, <span class=hljs-number >3</span><span class=hljs-literal >pi</span>], color = :red)
+
+ax2 = layout[<span class=hljs-number >1</span>, <span class=hljs-number >2</span>] = Axis(scene, title = <span class=hljs-string >&quot;hlines&quot;</span>)
+hlines!(ax2, [<span class=hljs-number >1</span>, <span class=hljs-number >2</span>, <span class=hljs-number >3</span>, <span class=hljs-number >4</span>], xmax = [<span class=hljs-number >0.25</span>, <span class=hljs-number >0.5</span>, <span class=hljs-number >0.75</span>, <span class=hljs-number >1</span>], color = :blue)
+
+scene</code></pre></p> <p> <a id=example_13171401327592012980 > <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_13171401327592012980.png" alt=""> </a> <h3 id=abline ><a href="#abline" class=header-anchor >abline&#33;</a></h3> <p>abline works similar to v/hlines&#33;:</p> <div class=docstring > <h2 class=doc-header  id="abline!"> <a href="#abline!">abline!</a> <div class=doc-type ></div> </h2> <div class=doc-content ><pre><code class="julia hljs">abline!(axis::Axis, a::<span class=hljs-built_in >Number</span>, b::<span class=hljs-built_in >Number</span>; line_kw_args...)</code></pre>
+<p>Adds a line defined by <code>f&#40;x&#41; &#61; x * b &#43; a</code> to the axis. kwargs are the same as for a <code>line</code> plot and are passed directly to the line attributess.</p>
+</div>
+  </div>
+
+<pre><code class="julia hljs"><span class=hljs-keyword >using</span> CairoMakie
+CairoMakie.activate!()
+
+fig, ax, pl = scatter(<span class=hljs-number >1</span>:<span class=hljs-number >4</span>)
+abline!(ax, <span class=hljs-number >0</span>, <span class=hljs-number >1</span>)
+abline!(ax, <span class=hljs-number >0</span>, <span class=hljs-number >1.5</span>, color = :red, linestyle=:dash, linewidth=<span class=hljs-number >2</span>)
+fig</code></pre></p>
+<p>
+  <a id=example_3475336376333033657 >
+   <img src="/previews/PR1181/assets/examples/layoutables/axis/code/output/example_3475336376333033657.png" alt=""> 
+  </a>
+  
+<div class=page-foot >
+  <div class=copyright >
+    &copy; Makie.jl. Last modified: August 01, 2021. Website built with <a href="https://github.com/tlienart/Franklin.jl">Franklin.jl</a> and the <a href="https://julialang.org">Julia programming language</a>.
+  </div>
+</div>
+</div>
+
+      </div> 
+    </div>   
+
+    <div class=page__footer >
+      <footer>
+        
+        
+        <div class=page__footer-follow >
+          <ul class=social-icons >
+            <li><a href="https://twitter.com/MakiePlots" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-twitter-square" aria-hidden=true ></i> Twitter</a>
+            <li><a href="https://github.com/JuliaPlots/Makie.jl" rel="nofollow noopener noreferrer"><i class="fab fa-fw fa-github" aria-hidden=true ></i> GitHub</a>
+          </ul>
+        </div>
+        <div class=page__footer-copyright >&copy; Makie.jl. Powered by <a href="https://github.com/tlienart/Franklin.jl">Franklin</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel=nofollow >Minimal Mistakes</a>.</div>
+        <p>These docs were autogenerated using Makie: v0.15.0, GLMakie: v0.4.4, CairoMakie: v0.6.3, WGLMakie: v0.4.4</p>
+      </footer>
+    </div>
+
+    <script src="/previews/PR1181/libs/minimal-mistakes/main.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.2/js/all.js" integrity="sha384-DJ25uNYET2XCl5ZF++U8eNxPWqcKohUUBUpKGlNLMchM7q4Wjg2CUpjHLaL8yYPH" crossorigin=anonymous ></script>
