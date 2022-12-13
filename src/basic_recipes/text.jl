@@ -393,7 +393,7 @@ function float_justification(ju, al)::Float32
     float_justification = if ju === automatic
         get_xshift(0f0, 1f0, halign)
     else
-        get_xshift(0f0, 1f0, ju; default = Float32(ju)) # errors if wrong symbol is used
+        get_xshift(0f0, 1f0, ju; default=ju) # errors if wrong symbol is used
     end
 end
 
