@@ -392,14 +392,8 @@ function float_justification(ju, al)::Float32
     halign = al[1]
     float_justification = if ju === automatic
         get_xshift(0f0, 1f0, halign)
-    elseif ju == :left
-        0.0f0
-    elseif ju == :right
-        1.0f0
-    elseif ju == :center
-        0.5f0
     else
-        Float32(ju)
+        get_xshift(0f0, 1f0, ju; default = Float32(ju)) # errors if wrong symbol is used
     end
 end
 
