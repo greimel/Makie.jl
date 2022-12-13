@@ -44,7 +44,7 @@ $(ATTRIBUTES)
         color_over_bar = automatic,
         label_offset = 5,
         label_font = theme(scene, :font),
-        label_size = 20,
+        label_size = theme(scene, :fontsize),
         label_formatter = bar_label_formatter,
         transparency = false
     )
@@ -186,7 +186,7 @@ end
 
 function Makie.plot!(p::BarPlot)
 
-    labels = Observable(Tuple{String, Point2f}[])
+    labels = Observable(Tuple{Union{String,LaTeXStrings.LaTeXString}, Point2f}[])
     label_aligns = Observable(Vec2f[])
     label_offsets = Observable(Vec2f[])
     label_colors = Observable(RGBAf[])
@@ -260,6 +260,6 @@ function Makie.plot!(p::BarPlot)
         highclip = p.highclip, lowclip = p.lowclip, nan_color = p.nan_color,
     )
     if !isnothing(p.bar_labels[])
-        text!(p, labels; align=label_aligns, offset=label_offsets, color=label_colors, font=p.label_font, fontsize=p.label_size, rotation=p.label_rotation)
+        text!(p, labels; #=align=label_aligns,=# offset=label_offsets, color=label_colors, font=p.label_font, fontsize=p.label_size, rotation=p.label_rotation)
     end
 end
